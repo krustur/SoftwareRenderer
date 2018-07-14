@@ -74,6 +74,11 @@ namespace SoftwareRenderer
         {
             return new Vector3(a.X * f, a.Y * f, a.Z * f);
         }
+
+        public static Vector3 Normilize(Vector3 a)
+        {
+            var length = a.Length();
+            return new Vector3(a.X / length, a.Y / length, a.Z / length);
         }
     }
 }
