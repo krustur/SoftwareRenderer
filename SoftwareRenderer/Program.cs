@@ -18,20 +18,20 @@ namespace SoftwareRenderer
                 Console.WriteLine("SDL_Init failed");
                 return;
             }
-       
+
             var sdlWindow = SDL.SDL_CreateWindow("My Game Window",
-            SDL.SDL_WINDOWPOS_UNDEFINED,
+                SDL.SDL_WINDOWPOS_UNDEFINED,
                 SDL.SDL_WINDOWPOS_UNDEFINED,
                 WindowWidth, WindowHeight,
-            //SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN | 
-            SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL
-                );
+                //SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN | 
+                SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL
+            );
 
             var sdlRenderer = SDL.SDL_CreateRenderer(sdlWindow, -1, 0);
 
             var sdlTexture = SDL.SDL_CreateTexture(sdlRenderer,
                 SDL.SDL_PIXELFORMAT_ARGB8888,
-                (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
+                (int) SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
                 WindowWidth, WindowHeight);
 
             var softwareBuffer = new uint[WindowWidth * WindowHeight];
@@ -54,15 +54,14 @@ namespace SoftwareRenderer
                 {
                     for (uint x = 0; x < WindowWidth; x++)
                     {
-                        softwareBuffer[y * WindowWidth + x] = (x * 0x00000100) | ((y+_cnt) * 0x00010000);
+                        softwareBuffer[y * WindowWidth + x] = (x * 0x00000100) | ((y + _cnt) * 0x00010000);
                     }
-
                 }
 
                 // Software buffer to Texture
                 fixed (uint* fixedSoftwareBuffer = softwareBuffer)
                 {
-                    var myPixels = (IntPtr)fixedSoftwareBuffer;
+                    var myPixels = (IntPtr) fixedSoftwareBuffer;
                     SDL.SDL_UpdateTexture(sdlTexture, IntPtr.Zero, myPixels, WindowWidth * sizeof(uint));
                 }
 
@@ -74,10 +73,10 @@ namespace SoftwareRenderer
                 // frames per second
                 var ticks = SDL.SDL_GetTicks();
                 var ticksDiff = ticks - lastTicks;
-		        if(ticksDiff == 0)
-			        continue;
+                if (ticksDiff == 0)
+                    continue;
                 lastTicks = ticks;
-		        var fps = 1000 / ticksDiff;
+                var fps = 1000 / ticksDiff;
                 Console.WriteLine($"Frames per second: {fps}");
             }
 
@@ -86,7 +85,8 @@ namespace SoftwareRenderer
 
         private static void HandleEvent(SDL.SDL_Event eventt)
         {
-            switch (eventt.type) {
+            switch (eventt.type)
+            {
                 case SDL.SDL_EventType.SDL_QUIT:
                 {
                     _running = false;
@@ -114,7 +114,6 @@ namespace SoftwareRenderer
                 default:
                     break;
             }
+        }
     }
-
-}
 }
