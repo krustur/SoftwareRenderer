@@ -58,12 +58,14 @@ namespace SoftwareRenderer
                     }
                 }
 
-                var u = new Vector3(190, 45, 0);
-                var v = new Vector3(35, -80, 0);
+                var u = new Vector3(190, 55, 0);
+                var v = new Vector3(45, -190, 0);
                 var dot = Vector3.Dot(u, v);
                 var lengthOfPontoQ = dot / u.Length();
-                Console.WriteLine($"lengthOfPontoQ: {lengthOfPontoQ}");
+                //Console.WriteLine($"lengthOfPontoQ: {lengthOfPontoQ}");
                 var proj = Vector3.Proj(u, v);
+                var theta = Math.Acos(dot / (u.Length() * v.Length())) * (180.0 / Math.PI);
+                Console.WriteLine($"theta: {theta}");
                 //var perp = Vector3.Perp(p, q);
                 //Console.WriteLine($"dot: {dot}");
                 softwareBuffer.DrawLine(
