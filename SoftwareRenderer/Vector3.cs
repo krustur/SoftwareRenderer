@@ -8,23 +8,30 @@ namespace SoftwareRenderer
         public float Y { get; set; }
         public float Z { get; set; }
 
+        public Vector3(float x, float y, float z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
         public static float Dot(Vector3 p, Vector3 q)
         {
             var dot = p.X * q.X + p.Y * q.Y + p.Z * q.Z;
             return dot;
         }
 
-        public static double LengthSquared(Vector3 v)
+        public float LengthSquared()
         {
-            var lengthSquared = v.X * v.X + v.Y * v.Y + v.Z * v.Z;
+            var lengthSquared = X * X + Y * Y + Z * Z;
             return lengthSquared;
         }
 
-        public static double Length(Vector3 v)
+        public float Length()
         {
-            var lengthSquared = v.X * v.X + v.Y * v.Y + v.Z * v.Z;
+            var lengthSquared = X * X + Y * Y + Z * Z;
             var length = Math.Sqrt(lengthSquared);
-            return length;
+            return (float) length;
         }
 
         public static Vector3 Cross(Vector3 p, Vector3 q)
@@ -38,5 +45,17 @@ namespace SoftwareRenderer
             return cross;
         }
 
+        public static Vector3 Proj(Vector3 p, Vector3 onto)
+        {
+            var dot = Dot(p, onto);
+            var xxx = dot / onto.LengthSquared();
+            var proj = onto * xxx;
+            return proj;
+        }
+
+        public static Vector3 operator *(Vector3 a, float f)
+        {
+            return new Vector3(a.X * f, a.Y * f, a.Z * f);
+        }
     }
 }
