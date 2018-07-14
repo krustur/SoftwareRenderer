@@ -71,6 +71,8 @@
     <Compile Include="SDL2-CS\SDL2_image.cs" />
     <Compile Include="SDL2-CS\SDL2_mixer.cs" />
     <Compile Include="SDL2-CS\SDL2_ttf.cs" />
+    <Compile Include="SoftwareBuffer.cs" />
+    <Compile Include="Swapper.cs" />
     <Compile Include="Vector3.cs" />
   </ItemGroup>
   <ItemGroup>

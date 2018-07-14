@@ -34,7 +34,7 @@ namespace SoftwareRenderer
                 (int) SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
                 WindowWidth, WindowHeight);
 
-            var softwareBuffer = new uint[WindowWidth * WindowHeight];
+            var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
 
             var lastTicks = SDL.SDL_GetTicks();
 
@@ -54,12 +54,46 @@ namespace SoftwareRenderer
                 {
                     for (uint x = 0; x < WindowWidth; x++)
                     {
-                        softwareBuffer[y * WindowWidth + x] = (x * 0x00000100) | ((y + _cnt) * 0x00010000);
+                        softwareBuffer.Buffer[y * WindowWidth + x] = (x * 0x00000100) | ((y + _cnt) * 0x00010000);
                     }
                 }
 
+                //var p = new Vector3(150, 0, 0);
+                //var q = new Vector3(5, -80, 0);
+                //var dot = Vector3.Dot(p, q);
+                //var lengthOfPontoQ = dot / q.Length();
+                //Console.WriteLine($"lengthOfPontoQ: {lengthOfPontoQ}");
+                //var proj = Vector3.Proj(p, q);
+                //var perp = Vector3.Perp(p, q);
+                ////Console.WriteLine($"dot: {dot}");
+                //softwareBuffer.DrawLine(
+                //    softwareBuffer.Width / 2,
+                //    softwareBuffer.Heigth / 2, 
+                //    (int) (softwareBuffer.Width / 2 + p.X), 
+                //    (int) (softwareBuffer.Heigth / 2 + p.Y),
+                //    0x00ff0000);
+                //softwareBuffer.DrawLine(
+                //    softwareBuffer.Width / 2,
+                //    softwareBuffer.Heigth / 2,
+                //    (int)(softwareBuffer.Width / 2 + q.X),
+                //    (int)(softwareBuffer.Heigth / 2 + q.Y),
+                //    0x0000ff00);
+
+                ////softwareBuffer.DrawLine(
+                ////    softwareBuffer.Width / 2,
+                ////    softwareBuffer.Heigth / 2,
+                ////    (int)(softwareBuffer.Width / 2 + (perp.X * p.Length())),
+                ////    (int)(softwareBuffer.Heigth / 2 + (perp.Y * p.Length())),
+                ////    0x000000ff);
+                //softwareBuffer.DrawLine(
+                //    (int)(softwareBuffer.Width / 2 + q.X),
+                //    (int)(softwareBuffer.Heigth / 2 + q.Y),
+                //    (int)(softwareBuffer.Width / 2 + Vector3.Normilize(q).X * lengthOfPontoQ),
+                //    (int)(softwareBuffer.Heigth / 2 + Vector3.Normilize(q).Y * lengthOfPontoQ),
+                //    0x000000ff);
+
                 // Software buffer to Texture
-                fixed (uint* fixedSoftwareBuffer = softwareBuffer)
+                fixed (uint* fixedSoftwareBuffer = softwareBuffer.Buffer)
                 {
                     var myPixels = (IntPtr) fixedSoftwareBuffer;
                     SDL.SDL_UpdateTexture(sdlTexture, IntPtr.Zero, myPixels, WindowWidth * sizeof(uint));
@@ -77,7 +111,7 @@ namespace SoftwareRenderer
                     continue;
                 lastTicks = ticks;
                 var fps = 1000 / ticksDiff;
-                Console.WriteLine($"Frames per second: {fps}");
+                //Console.WriteLine($"Frames per second: {fps}");
             }
 
             SDL.SDL_Quit();

@@ -53,9 +53,27 @@ namespace SoftwareRenderer
             return proj;
         }
 
+        public static Vector3 Perp(Vector3 p, Vector3 of)
+        {
+            var proj = Proj(p, of);
+            var perp = p - proj;
+            return perp;
+        }
+
+        public static Vector3 operator +(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        }
+
+        public static Vector3 operator -(Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
+
         public static Vector3 operator *(Vector3 a, float f)
         {
             return new Vector3(a.X * f, a.Y * f, a.Z * f);
+        }
         }
     }
 }
