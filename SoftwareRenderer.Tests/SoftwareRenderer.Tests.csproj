@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SystemNumericComparison_Tests.cs" />
+    <Compile Include="UnityComparison_Tests.cs" />
     <Compile Include="Vector3_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

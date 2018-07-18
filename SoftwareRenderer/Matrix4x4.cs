@@ -35,7 +35,7 @@ namespace SoftwareRenderer
             R3 = new Vector4(m30, m31, m32, m33);
         }
 
-        private Matrix4X4(Vector4 m1, Vector4 m2, Vector4 m3, Vector4 m4)
+        public Matrix4X4(Vector4 m1, Vector4 m2, Vector4 m3, Vector4 m4)
         {
             R0 = m1;
             R1 = m2;
@@ -221,7 +221,34 @@ namespace SoftwareRenderer
             }
         }
 
-        public static Matrix4X4 CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
+        public static Matrix4X4 CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float near, float far)
+        {
+            /*
+ ( x  0  a  0 )       x = 2*near/(right-left)          y = 2*near/(top-bottom)
+ ( 0  y  b  0 )       a = (right+left)/(right-left)    b = (top+bottom)/(top-bottom)
+ ( 0  0  c  d )       c = -(far+near)/(far-near)       d = -(2*far*near)/(far-near)
+ ( 0  0  e  0 )       e = -1
+            */
+            var right = 10;
+            var left = -10;
+            var top = 10;
+            var bottom = -10;
+
+            var x = 2 * near / (right - left);
+            var y = 2 * near / (top - bottom);
+            var a = (right + left) / (right - left);
+            var b = (top + bottom) / (top - bottom);
+            var c = -(far + near) / (far - near);
+            var d = -(2 * far * near) / (far - near);
+            var e = -1f;
+
+            return new Matrix4X4(
+                new Vector4(x, 0, a, 0),
+                new Vector4(0, y, b, 0),
+                new Vector4(0, 0, c, d),
+                new Vector4(0, 0, e, 0));
+        }
+        public static Matrix4X4 CreatePerspectiveFieldOfView2(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
         {
             var yScale = (float) (1.0f / Math.Tan(fieldOfView * 0.5f));
             var xScale = yScale / aspectRatio;

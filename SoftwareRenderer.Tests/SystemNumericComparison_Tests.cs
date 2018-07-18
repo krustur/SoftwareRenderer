@@ -227,6 +227,4 @@ namespace SoftwareRenderer.Tests
         }
 
     }
-
-
 }

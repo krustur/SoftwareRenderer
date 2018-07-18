@@ -35,7 +35,7 @@ namespace SoftwareRenderer
                 WindowWidth, WindowHeight);
 
             var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
-            var cube = new BoxGeometryGenerator(50f);
+            var cube = new BoxGeometryGenerator(0.5f);
             float cubeRot = 0;
             var vertexBuffer = new Vector3[cube.Vertices.Length];
             var i = 0;
@@ -93,7 +93,7 @@ namespace SoftwareRenderer
                 // Cube
                 var scale = Matrix4X4.CreateScale(new Vector3(1, 1, 1));
                 //var translation = Matrix4X4.CreateTranslation(new Vector3(1, 1, 1));
-                var translation = Matrix4X4.CreateTranslation(new Vector3(0, -0.1f, 65));
+                var translation = Matrix4X4.CreateTranslation(new Vector3(0, -0.1f, 5));
                 var rotationX = Matrix4X4.CreateRotationX(0);
                 var rotationY = Matrix4X4.CreateRotationY(cubeRot);
                 var rotationZ = Matrix4X4.CreateRotationZ(0);
@@ -111,8 +111,8 @@ namespace SoftwareRenderer
 
                 // Render test
                 var world = Matrix4X4.Identity;
-                var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f, (float) softwareBuffer.Heigth / softwareBuffer.Width, 0.3f, 500);
-                var view = cubeTransform * camTransformInv;//Matrix4X4.Identity;
+                var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f * 2, (float) softwareBuffer.Heigth / softwareBuffer.Width, 5f, 500);
+                var view = cubeTransform * camTransform;//Matrix4X4.Identity;
                 var worldViewProj = world * view * proj;
 
 
@@ -125,7 +125,7 @@ namespace SoftwareRenderer
 
                 for (int face = 0; face < cube.Indices.Length / 3; face++)
                 {
-                    var pixScale = 1f;
+                    var pixScale = 5f;
                     var i1 = cube.Indices[face * 3 + 0];
                     var i2 = cube.Indices[face * 3 + 1];
                     var i3 = cube.Indices[face * 3 + 2];
