@@ -6,15 +6,45 @@ namespace SoftwareRenderer
     {
         private const double Tolerance = 1e-5;
 
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
+        private float[] _v;
+
+        public float X { get => _v?[0] ?? 0;
+            set
+            {
+                if (_v == null)
+                {
+                    _v = new [] {value, 0, 0};
+                    return;
+                }
+                _v[0] = value;
+            }
+        }
+        public float Y { get => _v?[1] ?? 0;
+            set
+            {
+                if (_v == null)
+                {
+                    _v = new [] {0, value, 0};
+                    return;
+                }
+                _v[1] = value;
+            }
+        }
+        public float Z { get => _v?[2] ?? 0;
+            set
+            {
+                if (_v == null)
+                {
+                    _v = new [] {0, 0, value};
+                    return;
+                }
+                _v[2] = value;
+            }
+        }
 
         public Vector3(float x, float y, float z)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            _v = new[] { x, y, z };
         }
 
         public static readonly Vector3 Zero = new Vector3(0, 0, 0);
@@ -140,19 +170,21 @@ namespace SoftwareRenderer
         {
             return $"[{X}, {Y}, {Z}]";
         }
-    }
 
-    public class Matrix4x4
-    {
-        public static readonly Matrix4x4 Identity = new Matrix4x4(
-            1, 0, 0, 0, 
-            0, 1, 0, 0,
-            0, 0, 1, 0, 
-            0, 0, 0, 1);
-
-        private Matrix4x4(float i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15)
+        public static Vector3 Transform(Vector3 v, Matrix4X4 m)
         {
-            throw new NotImplementedException();
+            return new Vector3(
+                v.X * m[0][0] + v.Y * m[0][1] + v.Z * m[0][2] + m[0][3],
+                v.X * m[1][0] + v.Y * m[1][1] + v.Z * m[1][2] + m[1][3],
+                v.X * m[2][0] + v.Y * m[2][1] + v.Z * m[2][2] + m[2][3]);
         }
+
+        //public static Vector3 Transform(Vector3 position, Matrix4x4 matrix)
+        //{
+        //    return new Vector3(
+        //        position.X * matrix.M11 + position.Y * matrix.M21 + position.Z * matrix.M31 + matrix.M41,
+        //        position.X * matrix.M12 + position.Y * matrix.M22 + position.Z * matrix.M32 + matrix.M42,
+        //        position.X * matrix.M13 + position.Y * matrix.M23 + position.Z * matrix.M33 + matrix.M43);
+        //}
     }
 }

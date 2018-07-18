@@ -18,6 +18,12 @@ namespace SoftwareRenderer.Tests
             _dot = Vector3.Dot(p, q);
             _cross = Vector3.Cross(p, q);
             _proj = Vector3.Proj(q, p);
+
+            // Coverage for .X, .Y and .Z
+            //var www = new Vector3 {Y = -2}; 
+            //var xxx = new Vector3 {Z = 0};
+            //xxx.X = 1;
+
         }
 
         [TestMethod]
