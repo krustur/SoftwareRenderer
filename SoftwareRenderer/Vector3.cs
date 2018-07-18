@@ -141,4 +141,18 @@ namespace SoftwareRenderer
             return $"[{X}, {Y}, {Z}]";
         }
     }
+
+    public class Matrix4x4
+    {
+        public static readonly Matrix4x4 Identity = new Matrix4x4(
+            1, 0, 0, 0, 
+            0, 1, 0, 0,
+            0, 0, 1, 0, 
+            0, 0, 0, 1);
+
+        private Matrix4x4(float i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
