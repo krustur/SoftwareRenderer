@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoxGeometryGenerator.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="Matrix4X4.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

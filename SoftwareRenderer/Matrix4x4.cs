@@ -5,6 +5,9 @@ namespace SoftwareRenderer
 {
     public struct Matrix4X4
     {
+        //private const double Tolerance = 10f;
+        private const double Tolerance = 1e-5;
+
         private Vector4 R0;
         private Vector4 R1;
         private Vector4 R2;
@@ -249,7 +252,8 @@ namespace SoftwareRenderer
                 new Vector4(0, 0, e, 0)
                 );
         }
-        public static Matrix4X4 CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
+
+        public static Matrix4X4 CreatePerspectiveFieldOfViewUnity(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
         {
             var yScale = (float) (1.0f / Math.Tan(fieldOfView * 0.5f));
             var xScale = yScale / aspectRatio;
@@ -264,6 +268,79 @@ namespace SoftwareRenderer
                 new Vector4(0, 0, -1, 0)
             );
 
+        }
+
+        public static Matrix4X4 CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float near, float far)
+        {
+            var right = 320;
+            var left = -320;
+            var top = 240;
+            var bottom = -240;
+
+            return CreatePerspectiveFieldOfViewV2(left, right, bottom, top, near, far);
+        }
+
+        public static Matrix4X4 CreatePerspectiveFieldOfViewV2(float left, float right, float bottom, float top, float near, float far)
+        {
+
+            var persp = new Matrix4X4(
+                new Vector4((2 * near) / (right - left),    0,                          (right + left) / (right - left),    0),
+                new Vector4(0,                              (2*near) / (top - bottom),  (top + bottom) / (top - bottom),    0),
+                new Vector4(0,                              0,                          -((far + near) / (far - near)),     -((2 * near * far) / (far - near))),
+                new Vector4(0,                              0,                          -1f,                                0)
+                );
+
+            //persp.R0.X *= right - left;
+            //persp.R0.Y *= top - bottom;
+
+            return persp;
+        }
+
+        public static Matrix4X4 CreatePerspectiveFieldOfViewV3(float left, float right, float bottom, float top, float fov, float near, float far)
+        {
+            //const float ar = m_persProj.Width / m_persProj.Height;
+            //const float zNear = m_persProj.zNear;
+            //const float zFar = m_persProj.zFar;
+            //const float zRange = zNear - zFar;
+            //const float tanHalfFOV = tanf(ToRadian(m_persProj.FOV / 2.0));
+
+            var width = right - left;
+            var heigth = top - bottom;
+            float ar = width / heigth;
+            float zRange = near - far;
+            float tanHalfFOV = (float)Math.Tan(MathHelper.ToRadians(fov / 2.0f));
+
+            var m00 = 1.0f / (tanHalfFOV * ar);
+            var m01 = 0.0f;
+            var m02 = 0.0f;
+            var m03 = 0.0f;
+
+            var m10 = 0.0f;
+            var m11 = 1.0f / tanHalfFOV;
+            var m12 = 0.0f;
+            var m13 = 0.0f;
+
+            var m20 = 0.0f;
+            var m21 = 0.0f;
+            var m22 = (-near - far) / zRange;
+            var m23 = 2.0f * far * near / zRange;
+
+            var m30 = 0.0f;
+            var m31 = 0.0f;
+            var m32 = 1.0f;
+            var m33 = 0.0f;
+
+            var persp = new Matrix4X4(
+                new Vector4(1.0f / (tanHalfFOV * ar),   0,                  0,    0),
+                new Vector4(0,                          1.0f / tanHalfFOV,  0,    0),
+                new Vector4(0,                          0, (-near - far) / zRange, 2.0f * far * near / zRange),
+                new Vector4(0,                          0,                 -1f,                                0)
+                );
+
+            //persp.R0.X *= right - left;
+            //persp.R0.Y *= top - bottom;
+
+            return persp;
         }
 
         public Matrix4X4 Inverse()
@@ -361,8 +438,123 @@ namespace SoftwareRenderer
             result[3, 2] = (float) (-(a * fl_hj - b * el_hi + d * ej_fi) * invDet);
             result[3, 3] = (float) (+(a * fk_gj - b * ek_gi + c * ej_fi) * invDet);
 
+            result = result.Transpose();
+
             return result;
         }
 
+        Matrix4X4 Transpose()
+        {
+            var result = new Matrix4X4(
+                new Vector4(R0.X, R1.X, R2.X, R3.X),
+                new Vector4(R0.Y, R1.Y, R2.Y, R3.Y),
+                new Vector4(R0.Z, R1.Z, R2.Z, R3.Z),
+                new Vector4(R0.W, R1.W, R2.W, R3.W)
+                );
+
+            return result;
+        }
+
+        public static bool operator !=(Matrix4X4 lhs, Matrix4X4 rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+
+        public static bool operator ==(Matrix4X4 lhs, Matrix4X4 rhs)
+        {
+            return Math.Abs(lhs.R0.X - rhs.R0.X) < Tolerance 
+                && Math.Abs(lhs.R0.Y - rhs.R0.Y) < Tolerance 
+                && Math.Abs(lhs.R0.Z - rhs.R0.Z) < Tolerance
+                && Math.Abs(lhs.R0.W - rhs.R0.W) < Tolerance
+                && Math.Abs(lhs.R1.X - rhs.R1.X) < Tolerance
+                && Math.Abs(lhs.R1.Y - rhs.R1.Y) < Tolerance
+                && Math.Abs(lhs.R1.Z - rhs.R1.Z) < Tolerance
+                && Math.Abs(lhs.R1.W - rhs.R1.W) < Tolerance
+                && Math.Abs(lhs.R2.X - rhs.R2.X) < Tolerance
+                && Math.Abs(lhs.R2.Y - rhs.R2.Y) < Tolerance
+                && Math.Abs(lhs.R2.Z - rhs.R2.Z) < Tolerance
+                && Math.Abs(lhs.R2.W - rhs.R2.W) < Tolerance
+                && Math.Abs(lhs.R3.X - rhs.R3.X) < Tolerance
+                && Math.Abs(lhs.R3.Y - rhs.R3.Y) < Tolerance
+                && Math.Abs(lhs.R3.Z - rhs.R3.Z) < Tolerance
+                && Math.Abs(lhs.R3.W - rhs.R3.W) < Tolerance
+                ;
+        }
+
+        public bool Equals(Matrix4X4 other)
+        {
+            //return this == other;
+            //return R0.X.Equals(other.R0.X)
+            //    && R0.Y.Equals(other.R0.Y)
+            //    && R0.Z.Equals(other.R0.Z)
+            //    && R0.W.Equals(other.R0.W)
+            //    && R1.X.Equals(other.R1.X)
+            //    && R1.Y.Equals(other.R1.Y)
+            //    && R1.Z.Equals(other.R1.Z)
+            //    && R1.W.Equals(other.R1.W)
+            //    && R2.X.Equals(other.R2.X)
+            //    && R2.Y.Equals(other.R2.Y)
+            //    && R2.Z.Equals(other.R2.Z)
+            //    && R2.W.Equals(other.R2.W)
+            //    && R3.X.Equals(other.R3.X)
+            //    && R3.Y.Equals(other.R3.Y)
+            //    && R3.Z.Equals(other.R3.Z)
+            //    && R3.W.Equals(other.R3.W)
+            //    ;
+            return Math.Abs(R0.X - other.R0.X) < Tolerance
+                && Math.Abs(R0.Y - other.R0.Y) < Tolerance
+                && Math.Abs(R0.Z - other.R0.Z) < Tolerance
+                && Math.Abs(R0.W - other.R0.W) < Tolerance
+                && Math.Abs(R1.X - other.R1.X) < Tolerance
+                && Math.Abs(R1.Y - other.R1.Y) < Tolerance
+                && Math.Abs(R1.Z - other.R1.Z) < Tolerance
+                && Math.Abs(R1.W - other.R1.W) < Tolerance
+                && Math.Abs(R2.X - other.R2.X) < Tolerance
+                && Math.Abs(R2.Y - other.R2.Y) < Tolerance
+                && Math.Abs(R2.Z - other.R2.Z) < Tolerance
+                && Math.Abs(R2.W - other.R2.W) < Tolerance
+                && Math.Abs(R3.X - other.R3.X) < Tolerance
+                && Math.Abs(R3.Y - other.R3.Y) < Tolerance
+                && Math.Abs(R3.Z - other.R3.Z) < Tolerance
+                && Math.Abs(R3.W - other.R3.W) < Tolerance
+                ;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is Matrix4X4 && Equals((Matrix4X4)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = R0.X.GetHashCode();
+                hashCode = (hashCode * 397) ^ R0.Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ R0.Z.GetHashCode();
+                hashCode = (hashCode * 397) ^ R0.W.GetHashCode();
+                hashCode = (hashCode * 397) ^ R1.X.GetHashCode();
+                hashCode = (hashCode * 397) ^ R1.Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ R1.Z.GetHashCode();
+                hashCode = (hashCode * 397) ^ R1.W.GetHashCode();
+                hashCode = (hashCode * 397) ^ R2.X.GetHashCode();
+                hashCode = (hashCode * 397) ^ R2.Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ R2.Z.GetHashCode();
+                hashCode = (hashCode * 397) ^ R2.W.GetHashCode();
+                hashCode = (hashCode * 397) ^ R3.X.GetHashCode();
+                hashCode = (hashCode * 397) ^ R3.Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ R3.Z.GetHashCode();
+                hashCode = (hashCode * 397) ^ R3.W.GetHashCode();
+
+                return hashCode;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{R0.X}, {R0.Y}, {R0.Z}, {R0.W} : {R1.X}, {R1.Y}, {R1.Z}, {R1.W} : {R2.X}, {R2.Y}, {R2.Z}, {R2.W} : {R3.X}, {R3.Y}, {R3.Z}, {R3.W}";
+        }
     }
 }
