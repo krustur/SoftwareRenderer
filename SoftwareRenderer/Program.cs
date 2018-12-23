@@ -31,7 +31,7 @@ namespace SoftwareRenderer
 
             var sdlTexture = SDL.SDL_CreateTexture(sdlRenderer,
                 SDL.SDL_PIXELFORMAT_ARGB8888,
-                (int) SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
+                (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
                 WindowWidth, WindowHeight);
 
             var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
@@ -52,7 +52,7 @@ namespace SoftwareRenderer
 
                 //Software stuff here!
                 //Temp gfx OR hack
-               _cnt++;
+                _cnt++;
                 for (uint y = 0; y < WindowHeight; y++)
                 {
                     for (uint x = 0; x < WindowWidth; x++)
@@ -90,42 +90,52 @@ namespace SoftwareRenderer
                 //    (int)(softwareBuffer.Heigth / 2 + Vector3.Normalize(u).Y * lengthOfPontoQ),
                 //    0x000000ff);
 
-                // Cube
-                var scale = Matrix4X4.CreateScale(new Vector3(1, 1, 1));
-                //var translation = Matrix4X4.CreateTranslation(new Vector3(1, 1, 1));
-                var translation = Matrix4X4.CreateTranslation(new Vector3(0, -0.1f, 5));
-                var rotationX = Matrix4X4.CreateRotationX(0);
-                var rotationY = Matrix4X4.CreateRotationY(cubeRot);
-                var rotationZ = Matrix4X4.CreateRotationZ(0);
-                var cubeTransform = scale * rotationX * rotationY * rotationZ * translation;
-                cubeRot += 0.003f;
+                var oneScale = Matrix4X4.CreateScale(new Vector3(1, 1, 1));
+                
+                // ZeroCamera
+                var zerocamtranslation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 0));
+                var zerocamrotationX = Matrix4X4.CreateRotationX(0);
+                var zerocamrotationY = Matrix4X4.CreateRotationY(0);
+                var zerocamrotationZ = Matrix4X4.CreateRotationZ(0);
+                var zerocamTransform = oneScale * zerocamtranslation * zerocamrotationX * zerocamrotationY * zerocamrotationZ;
+                var zerocamViewTransform = zerocamTransform.Inverse();
 
                 // Camera
-                scale = Matrix4X4.CreateScale(new Vector3(1, 1, 1));
-                translation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 0));
-                rotationX = Matrix4X4.CreateRotationX(0);
-                rotationY = Matrix4X4.CreateRotationY(0);
-                rotationZ = Matrix4X4.CreateRotationZ(0);
-                var camTransform = scale * rotationX * rotationY * rotationZ * translation;
-                var camTransformInv = camTransform.Inverse();
+                var camtranslation = Matrix4X4.CreateTranslation(new Vector3(2.5f, 1.5f, 0));
+                var camrotationX = Matrix4X4.CreateRotationX(ToRadians(4));
+                var camrotationY = Matrix4X4.CreateRotationY(0);
+                var camrotationZ = Matrix4X4.CreateRotationZ(0);
+                var camTransform = oneScale * camrotationX * camrotationY * camrotationZ * camtranslation;
+                var camViewTransform = camTransform.Inverse();
+
+                // RotCube
+                var rotcubetranslation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 4));
+                var rotcuberotationX = Matrix4X4.CreateRotationX(0);
+                var rotcuberotationY = Matrix4X4.CreateRotationY(cubeRot);
+                var rotcuberotationZ = Matrix4X4.CreateRotationZ(0);
+                var rotcubecubeTransform = oneScale * rotcuberotationX * rotcuberotationY * rotcuberotationZ * rotcubetranslation;
+                cubeRot += 0.003f;
 
                 // Render test
-                var world = Matrix4X4.Identity;
-                var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f * 2, (float) softwareBuffer.Heigth / softwareBuffer.Width, 5f, 500);
-                var view = cubeTransform * camTransform;//Matrix4X4.Identity;
-                var worldViewProj = world * view * proj;
+                //var world = Matrix4X4.Identity;
+                var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f, (float)softwareBuffer.Heigth / softwareBuffer.Width, 0.3f, 10);
+                //proj = Matrix4X4.Identity;
+                //var view = zerocamTransformInv;// cubeTransform * camTransform;//Matrix4X4.Identity;
+                //var worldViewProj = world * view * proj;
 
 
-
+                //var rotcubeworld
                 var verticeCount = 0;
+                var thisTransform = rotcubecubeTransform * zerocamViewTransform;// * proj;
                 foreach (var cubeVertex in cube.Vertices)
                 {
-                    vertexBuffer[verticeCount++] = Vector3.Transform(cubeVertex, worldViewProj);
+                    vertexBuffer[verticeCount++] = Vector3.Transform(cubeVertex, thisTransform);
+                    //vertexBuffer[verticeCount++] = cubeVertex;
                 }
 
                 for (int face = 0; face < cube.Indices.Length / 3; face++)
                 {
-                    var pixScale = 5f;
+                    var pixScale = 50f;
                     var i1 = cube.Indices[face * 3 + 0];
                     var i2 = cube.Indices[face * 3 + 1];
                     var i3 = cube.Indices[face * 3 + 2];
@@ -136,22 +146,22 @@ namespace SoftwareRenderer
                     var x3 = vertexBuffer[i3].X * pixScale;
                     var y3 = vertexBuffer[i3].Y * pixScale;
                     softwareBuffer.DrawLine(
-                        (int) (softwareBuffer.Width / 2 + x1),
-                        (int) (softwareBuffer.Heigth / 2 + y1),
-                        (int) (softwareBuffer.Width / 2 + x2),
-                        (int) (softwareBuffer.Heigth / 2 + y2),
+                        (int)(softwareBuffer.Width / 2 + x1),
+                        (int)(softwareBuffer.Heigth / 2 + y1),
+                        (int)(softwareBuffer.Width / 2 + x2),
+                        (int)(softwareBuffer.Heigth / 2 + y2),
                         0x000000ff);
                     softwareBuffer.DrawLine(
-                        (int) (softwareBuffer.Width / 2 + x2),
-                        (int) (softwareBuffer.Heigth / 2 + y2),
-                        (int) (softwareBuffer.Width / 2 + x3),
-                        (int) (softwareBuffer.Heigth / 2 + y3),
+                        (int)(softwareBuffer.Width / 2 + x2),
+                        (int)(softwareBuffer.Heigth / 2 + y2),
+                        (int)(softwareBuffer.Width / 2 + x3),
+                        (int)(softwareBuffer.Heigth / 2 + y3),
                         0x000000ff);
                     softwareBuffer.DrawLine(
-                        (int) (softwareBuffer.Width / 2 + x3),
-                        (int) (softwareBuffer.Heigth / 2 + y3),
-                        (int) (softwareBuffer.Width / 2 + x1),
-                        (int) (softwareBuffer.Heigth / 2 + y1),
+                        (int)(softwareBuffer.Width / 2 + x3),
+                        (int)(softwareBuffer.Heigth / 2 + y3),
+                        (int)(softwareBuffer.Width / 2 + x1),
+                        (int)(softwareBuffer.Heigth / 2 + y1),
                         0x000000ff);
                 }
                 //cube.Vertices
@@ -165,7 +175,7 @@ namespace SoftwareRenderer
                 // Software buffer to Texture
                 fixed (uint* fixedSoftwareBuffer = softwareBuffer.Buffer)
                 {
-                    var myPixels = (IntPtr) fixedSoftwareBuffer;
+                    var myPixels = (IntPtr)fixedSoftwareBuffer;
                     SDL.SDL_UpdateTexture(sdlTexture, IntPtr.Zero, myPixels, WindowWidth * sizeof(uint));
                 }
 
@@ -192,19 +202,19 @@ namespace SoftwareRenderer
             switch (eventt.type)
             {
                 case SDL.SDL_EventType.SDL_QUIT:
-                {
-                    _running = false;
-                    break;
-                }
+                    {
+                        _running = false;
+                        break;
+                    }
                 case SDL.SDL_EventType.SDL_KEYDOWN:
-                {
-                    HandleKeyEvent(eventt);
-                    break;
-                }
+                    {
+                        HandleKeyEvent(eventt);
+                        break;
+                    }
                 default:
-                {
-                    break;
-                }
+                    {
+                        break;
+                    }
             }
         }
 
@@ -219,5 +229,11 @@ namespace SoftwareRenderer
                     break;
             }
         }
+
+        public static float ToRadians(float degrees)
+        {
+            return (float)(Math.PI / 180) * degrees;
+        }
     }
+
 }
