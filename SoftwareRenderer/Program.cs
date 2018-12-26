@@ -98,13 +98,14 @@ namespace SoftwareRenderer
                 var zerocamrotationZ = Matrix4X4.CreateRotationZ(0);
                 var zerocamTransform = oneScale * zerocamtranslation * zerocamrotationX * zerocamrotationY * zerocamrotationZ;
                 var zerocamViewTransform = zerocamTransform.Inverse();
+                zerocamViewTransform[2] = new Vector4(-zerocamViewTransform[2].X, -zerocamViewTransform[2].Y, -zerocamViewTransform[2].Z, -zerocamViewTransform[2].W);
 
                 // Camera
                 var camtranslation = Matrix4X4.CreateTranslation(new Vector3(2.5f, 1.5f, 0));
                 var camrotationX = Matrix4X4.CreateRotationX(MathHelper.ToRadians(4));
                 var camrotationY = Matrix4X4.CreateRotationY(0);
                 var camrotationZ = Matrix4X4.CreateRotationZ(0);
-                var camTransform = oneScale * camrotationX * camrotationY * camrotationZ * camtranslation;
+                var camTransform = oneScale * camrotationZ * camrotationY * camrotationX * camtranslation;
                 var camViewTransform = camTransform.Inverse();
 
                 // RotCube
@@ -112,7 +113,7 @@ namespace SoftwareRenderer
                 var rotcuberotationX = Matrix4X4.CreateRotationX(0);
                 var rotcuberotationY = Matrix4X4.CreateRotationY(cubeRot);
                 var rotcuberotationZ = Matrix4X4.CreateRotationZ(0);
-                var rotcubecubeTransform = oneScale * rotcuberotationX * rotcuberotationY * rotcuberotationZ * rotcubetranslation;
+                var rotcubecubeTransform = oneScale * rotcuberotationZ * rotcuberotationY * rotcuberotationX * rotcubetranslation;
                 cubeRot += 0.003f;
 
                 // Render test
@@ -127,13 +128,14 @@ namespace SoftwareRenderer
 
                 //var rotcubeworld
                 var verticeCount = 0;
-                var thisTransform = rotcubecubeTransform * zerocamViewTransform;// * proj;
+                var thisTransform = rotcubecubeTransform * zerocamViewTransform * proj;
                 //thisTransform = rotcubecubeTransform;
                 foreach (var cubeVertex in cube.Vertices)
                 {
-                    var inCameraSpace = Vector3.Transform(cubeVertex, thisTransform);
+                    var test = Vector3.Transform(cubeVertex, rotcubecubeTransform * zerocamViewTransform * proj);
+                    var inClipSpace = Vector3.Transform(cubeVertex, thisTransform);
 
-                    var inClipSpace = Vector3.Transform(inCameraSpace, proj);
+                    //var inClipSpace = Vector3.Transform(inCameraSpace, proj);
                     //var inCameraSpace2 = new Vector3(inCameraSpace.X, inCameraSpace.Y, inCameraSpace.Z + 1.55f);
                     //var inClipSpace = Vector3.Transform(inCameraSpace2, proj);
                     //inClipSpace.X *= softwareBuffer.Width;
@@ -149,16 +151,17 @@ namespace SoftwareRenderer
 
                 for (int face = 0; face < cube.Indices.Length / 3; face++)
                 {
-                    var pixScale = 1f;
+                    var pixScaleX = softwareBuffer.Width;
+                    var pixScaleY = softwareBuffer.Heigth;
                     var i1 = cube.Indices[face * 3 + 0];
                     var i2 = cube.Indices[face * 3 + 1];
                     var i3 = cube.Indices[face * 3 + 2];
-                    var x1 = vertexBuffer[i1].X * pixScale;
-                    var y1 = vertexBuffer[i1].Y * pixScale;
-                    var x2 = vertexBuffer[i2].X * pixScale;
-                    var y2 = vertexBuffer[i2].Y * pixScale;
-                    var x3 = vertexBuffer[i3].X * pixScale;
-                    var y3 = vertexBuffer[i3].Y * pixScale;
+                    var x1 = vertexBuffer[i1].X * pixScaleX;
+                    var y1 = vertexBuffer[i1].Y * pixScaleY;
+                    var x2 = vertexBuffer[i2].X * pixScaleX;
+                    var y2 = vertexBuffer[i2].Y * pixScaleY;
+                    var x3 = vertexBuffer[i3].X * pixScaleX;
+                    var y3 = vertexBuffer[i3].Y * pixScaleY;
                     softwareBuffer.DrawLine(
                         (int)(softwareBuffer.Width / 2 + x1),
                         (int)(softwareBuffer.Heigth / 2 + y1),

@@ -173,15 +173,15 @@ namespace SoftwareRenderer
 
         public static Vector3 Transform(Vector3 v, Matrix4X4 m)
         {
-            //return new Vector3(
-            //    v.X * m[0][0] + v.Y * m[0][1] + v.Z * m[0][2] + m[0][3],
-            //    v.X * m[1][0] + v.Y * m[1][1] + v.Z * m[1][2] + m[1][3],
-            //    v.X * m[2][0] + v.Y * m[2][1] + v.Z * m[2][2] + m[2][3]);
-            return new Vector3(
-                v.X * m[0][0] + v.Y * m[1][0] + v.Z * m[2][0] + 1 * m[3][0],
-                v.X * m[0][1] + v.Y * m[1][1] + v.Z * m[2][1] + 1 * m[3][1],
-                v.X * m[0][2] + v.Y * m[1][2] + v.Z * m[2][2] + 1 * m[3][2]);
-            //,
+            var result = new Vector3(
+                v.X * m[0][0] + v.Y * m[0][1] + v.Z * m[0][2] + m[0][3],
+                v.X * m[1][0] + v.Y * m[1][1] + v.Z * m[1][2] + m[1][3],
+                v.X * m[2][0] + v.Y * m[2][1] + v.Z * m[2][2] + m[2][3]);
+            //var result = new Vector3(
+            //    v.X * m[0][0] + v.Y * m[1][0] + v.Z * m[2][0] + 1 * m[3][0],
+            //    v.X * m[0][1] + v.Y * m[1][1] + v.Z * m[2][1] + 1 * m[3][1],
+            //    v.X * m[0][2] + v.Y * m[1][2] + v.Z * m[2][2] + 1 * m[3][2]);
+            return result;
             //v.X * m[0][3] + v.Y * m[1][3] + v.Z * m[2][3] + 1 * m[3][3]);
         }
 
