@@ -38,7 +38,6 @@ namespace SoftwareRenderer
             var cube = new BoxGeometryGenerator(0.5f);
             float cubeRot = 0;
             var vertexBuffer = new Vector3[cube.Vertices.Length];
-            var i = 0;
 
             var lastTicks = SDL.SDL_GetTicks();
             // loop until done
@@ -118,7 +117,9 @@ namespace SoftwareRenderer
 
                 // Render test
                 //var world = Matrix4X4.Identity;
-                var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f, (float)softwareBuffer.Heigth / softwareBuffer.Width, 0.3f, 1000);
+                //var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f, (float)softwareBuffer.Heigth / softwareBuffer.Width, 0.3f, 1000);
+                var proj = Matrix4X4.CreatePerspectiveFieldOfViewV3(0, softwareBuffer.Width, 0, softwareBuffer.Heigth, 60.0f, 0.3f, 1000);
+
                 //proj = Matrix4X4.Identity;
                 //var view = zerocamTransformInv;// cubeTransform * camTransform;//Matrix4X4.Identity;
                 //var worldViewProj = world * view * proj;
@@ -127,20 +128,21 @@ namespace SoftwareRenderer
                 //var rotcubeworld
                 var verticeCount = 0;
                 var thisTransform = rotcubecubeTransform * zerocamViewTransform;// * proj;
-                thisTransform = rotcubecubeTransform;
+                //thisTransform = rotcubecubeTransform;
                 foreach (var cubeVertex in cube.Vertices)
                 {
                     var inCameraSpace = Vector3.Transform(cubeVertex, thisTransform);
 
-                    var inCameraSpace2 = new Vector3(inCameraSpace.X, inCameraSpace.Y, inCameraSpace.Z + 1.55f);
-                    var inClipSpace = Vector3.Transform(inCameraSpace2, proj);
-                    inClipSpace.X *= softwareBuffer.Width;
-                    inClipSpace.Y *= softwareBuffer.Heigth;
+                    var inClipSpace = Vector3.Transform(inCameraSpace, proj);
+                    //var inCameraSpace2 = new Vector3(inCameraSpace.X, inCameraSpace.Y, inCameraSpace.Z + 1.55f);
+                    //var inClipSpace = Vector3.Transform(inCameraSpace2, proj);
+                    //inClipSpace.X *= softwareBuffer.Width;
+                    //inClipSpace.Y *= softwareBuffer.Heigth;
 
-                    var z = inCameraSpace.Z + 1.55f;
-                    var x = (float)-((0.3 / z) * inCameraSpace.X) * softwareBuffer.Width;
-                    var y = (float)-((0.3 / z) * inCameraSpace.Y) * softwareBuffer.Heigth;
-                    var inClipSpace2 = new Vector3(x, y, z);
+                    //var z = inCameraSpace.Z + 1.55f;
+                    //var x = (float)-((0.3 / z) * inCameraSpace.X) * softwareBuffer.Width;
+                    //var y = (float)-((0.3 / z) * inCameraSpace.Y) * softwareBuffer.Heigth;
+                    //var inClipSpace2 = new Vector3(x, y, z);
 
                     vertexBuffer[verticeCount++] = inClipSpace;
                 }

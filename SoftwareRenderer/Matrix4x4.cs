@@ -331,10 +331,10 @@ namespace SoftwareRenderer
             var m33 = 0.0f;
 
             var persp = new Matrix4X4(
-                new Vector4(1.0f / (tanHalfFOV * ar),   0,                  0,    0),
-                new Vector4(0,                          1.0f / tanHalfFOV,  0,    0),
-                new Vector4(0,                          0, (-near - far) / zRange, 2.0f * far * near / zRange),
-                new Vector4(0,                          0,                 -1f,                                0)
+                new Vector4(1.0f / (tanHalfFOV * ar),   0,                  0,                          0),
+                new Vector4(0,                          1.0f / tanHalfFOV,  0,                          0),
+                new Vector4(0,                          0,                  -((-near - far) / zRange),   2.0f * far * near / zRange),
+                new Vector4(0,                          0,                 -1f,                         0)
                 );
 
             //persp.R0.X *= right - left;
