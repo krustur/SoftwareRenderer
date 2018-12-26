@@ -18,6 +18,8 @@ namespace SoftwareRenderer.Tests
 
         private Matrix4X4 _cameraTransform;
         private Matrix4X4 _cameraTransformInverse;
+        private Matrix4X4 _cameraWorldToCamera;
+        private Matrix4X4 _cameraWorldToCameraInverse;
         private Matrix4X4 _cameraProjection;
         private Matrix4X4 _cameraTransformLocalToWorldMatrixUnity;
         private Matrix4X4 _cameraTransformLocalToWorldMatrixInverseUnity;
@@ -93,8 +95,14 @@ namespace SoftwareRenderer.Tests
             var camrotationY = Matrix4X4.CreateRotationY(0);
             var camrotationZ = Matrix4X4.CreateRotationZ(0);
             //_cameraTransform = _oneScale * camrotationX * camrotationY * camrotationZ * camtranslation;
-            _cameraTransform = _oneScale * camtranslation * camrotationZ * camrotationX * camrotationY;
+            _cameraTransform = _oneScale * camtranslation * camrotationZ * camrotationY * camrotationX;
             _cameraTransformInverse = _cameraTransform.Inverse();
+
+            _cameraWorldToCamera = _cameraTransform.Inverse();
+            _cameraWorldToCamera[2] = new Vector4(-_cameraWorldToCamera[2].X, -_cameraWorldToCamera[2].Y, -_cameraWorldToCamera[2].Z, -_cameraWorldToCamera[2].W);
+            _cameraWorldToCameraInverse = _cameraWorldToCamera.Inverse();
+            //_backwardsCameraTransform = _oneScale * camtranslation * camrotationZ * camrotationY * camrotationX;
+
             _cameraProjection = Matrix4X4.CreatePerspectiveFieldOfViewV3(0, 1024, 0, 768, 60.0f, 0.3f, 1000);
             _cameraTransformLocalToWorldMatrixUnity = new Matrix4X4(new Vector4(1f, 0f, 0f, 2.5f), new Vector4(0f, 0.9975641f, -0.06975646f, 1.5f), new Vector4(0f, 0.06975646f, 0.9975641f, 0f), new Vector4(0f, 0f, 0f, 1f));
             _cameraTransformLocalToWorldMatrixInverseUnity = new Matrix4X4(new Vector4(1f, 0f, 0f, -2.5f), new Vector4(0f, 0.9975641f, 0.06975647f, -1.496346f), new Vector4(0f, -0.06975646f, 0.9975641f, 0.1046347f), new Vector4(0f, 0f, 0f, 1f));
@@ -210,29 +218,32 @@ namespace SoftwareRenderer.Tests
         {
             Assert.AreEqual(_cameraProjectionMatrixUnity, _cameraProjection);
         }
-        //[TestMethod]
-        //public void UnityComparison_Tests2_CameraWorldToCamera()
-        //{
-        //    Assert.AreEqual(_cameraWorldToCameraMatrixUnity, _cameraTransformInverse);
-        //}
 
-        //[TestMethod]
-        //public void UnityComparison_Tests2_CameraWorldToCamera_Inverse()
-        //{
-        //    Assert.AreEqual(_cameraWorldToCameraMatrixInverseUnity, _cameraTransformInverse);
-        //}
+        [TestMethod]
+        public void UnityComparison_Tests2_CameraWorldToCamera()
+        {
+            Assert.AreEqual(_cameraWorldToCameraMatrixUnity, _cameraWorldToCamera);
+            
+            //Assert.AreEqual(_cameraWorldToCameraMatrixUnity, _cameraTransformInverse);
+        }
 
-        //[TestMethod]
-        //public void UnityComparison_Tests2_CameraCameraToWorld()
-        //{
-        //    Assert.AreEqual(_cameraCameraToWorldMatrixUnity, _cameraTransformInverse);
-        //}
+        [TestMethod]
+        public void UnityComparison_Tests2_CameraWorldToCamera_Inverse()
+        {
+            Assert.AreEqual(_cameraWorldToCameraMatrixInverseUnity, _cameraWorldToCameraInverse);
+        }
 
-        //[TestMethod]
-        //public void UnityComparison_Tests2_CameraCameraToWorld_Inverse()
-        //{
-        //    Assert.AreEqual(_cameraCameraToWorldMatrixInverseUnity, _cameraTransformInverse);
-        //}
+        [TestMethod]
+        public void UnityComparison_Tests2_CameraCameraToWorld()
+        {
+            Assert.AreEqual(_cameraCameraToWorldMatrixUnity, _cameraWorldToCameraInverse);
+        }
+
+        [TestMethod]
+        public void UnityComparison_Tests2_CameraCameraToWorld_Inverse()
+        {
+            Assert.AreEqual(_cameraCameraToWorldMatrixInverseUnity, _cameraWorldToCamera);
+        }
 
         [TestMethod]
         public void UnityComparison_Tests2_RotCubeTransformLocalToWorld()
