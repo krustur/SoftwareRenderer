@@ -39,13 +39,11 @@ namespace SoftwareRenderer
             var vertexBuffer = new Vector4[cube.Vertices.Length];
 
             // Scene
-            // ZeroCamera
             var zeroCamera = new Camera(60f, (float)640 / 480, 0.3f, 1000f);
             zeroCamera.Transform.Position = Vector3.Zero;
             zeroCamera.Transform.Rotation = Vector3.Zero;
             zeroCamera.Transform.Scale = Vector3.One;
 
-            // Camera
             var camera = new Camera(60f, (float)640 / 480, 0.3f, 1000f);
             camera.Transform.Position = new Vector3(2.5f, 1.5f, -3f);
             camera.Transform.Rotation = new Vector3(4f, 0, 0);
@@ -58,6 +56,26 @@ namespace SoftwareRenderer
                 Position = new Vector3(0, 0, 4),
                 Rotation = new Vector3(0, 0, 0)
             };
+            var grandParent = new Transform
+            {
+                Position = new Vector3(2, 0.25f, 5),
+                Rotation = new Vector3(0, 45f, 0),
+                Scale = Vector3.One
+            };
+            var parent = new Transform
+            {
+                Position = new Vector3(2, 0, 0),
+                Rotation = new Vector3(-45, 0, 0),
+                Scale = Vector3.One
+            };
+            grandParent.AddChild(parent);
+            var child = new Transform
+            {
+                Position = new Vector3(0, 0, 3),
+                Rotation = Vector3.Zero,
+                Scale = Vector3.One
+            };
+            parent.AddChild(child);
 
             var lastTicks = SDL.SDL_GetTicks();
             // loop until done
@@ -112,6 +130,18 @@ namespace SoftwareRenderer
                 rotCube.Rotation = new Vector3(0, cubeRot, 0);
                 cubeRot += 1f;
 
+                // Gizmo
+                softwareBuffer.DrawLine(10, 10, 40, 10, 0x00ff0000);
+                softwareBuffer.DrawLine(35, 5, 40, 10, 0x00ff0000);
+                softwareBuffer.DrawLine(35, 15, 40, 10, 0x00ff0000);
+                softwareBuffer.DrawLine(10, 10, 10, 40, 0x0000ff00);
+                softwareBuffer.DrawLine(5, 35, 10, 40, 0x0000ff00);
+                softwareBuffer.DrawLine(15, 35, 10, 40, 0x0000ff00);
+                softwareBuffer.DrawLine(10, 10, 25, 25, 0x000000ff);
+                softwareBuffer.DrawLine(20, 25, 25, 25, 0x000000ff);
+                softwareBuffer.DrawLine(25, 20, 25, 25, 0x000000ff);
+
+
                 // Render test
                 var activeCamera = camera;           
                 var verticeCount = 0;
@@ -123,8 +153,12 @@ namespace SoftwareRenderer
                     inClipSpace.X /= inClipSpace.W;
                     inClipSpace.Y /= inClipSpace.W;
                     inClipSpace.Z /= inClipSpace.W;
-                    inClipSpace.X *= softwareBuffer.Width * 0.5f;
-                    inClipSpace.Y *= softwareBuffer.Heigth * -0.5f;
+                    inClipSpace.X += 1f;
+                    inClipSpace.Y += 1f;
+                    inClipSpace.X *= 0.5f;
+                    inClipSpace.Y *= 0.5f;
+                    inClipSpace.X *= softwareBuffer.Width;
+                    inClipSpace.Y *= softwareBuffer.Heigth;
                     inClipSpace.Z *= 0.5f;
 
                     vertexBuffer[verticeCount++] = inClipSpace;
@@ -141,24 +175,43 @@ namespace SoftwareRenderer
                     var y2 = vertexBuffer[i2].Y;
                     var x3 = vertexBuffer[i3].X;
                     var y3 = vertexBuffer[i3].Y;
+                    //softwareBuffer.DrawLine(
+                    //    (int)(softwareBuffer.Width / 2 + x1),
+                    //    (int)(softwareBuffer.Heigth / 2 + y1),
+                    //    (int)(softwareBuffer.Width / 2 + x2),
+                    //    (int)(softwareBuffer.Heigth / 2 + y2),
+                    //    0x000000ff);
+                    //softwareBuffer.DrawLine(
+                    //    (int)(softwareBuffer.Width / 2 + x2),
+                    //    (int)(softwareBuffer.Heigth / 2 + y2),
+                    //    (int)(softwareBuffer.Width / 2 + x3),
+                    //    (int)(softwareBuffer.Heigth / 2 + y3),
+                    //    0x000000ff);
+                    //softwareBuffer.DrawLine(
+                    //    (int)(softwareBuffer.Width / 2 + x3),
+                    //    (int)(softwareBuffer.Heigth / 2 + y3),
+                    //    (int)(softwareBuffer.Width / 2 + x1),
+                    //    (int)(softwareBuffer.Heigth / 2 + y1),
+                    //    0x000000ff);
                     softwareBuffer.DrawLine(
-                        (int)(softwareBuffer.Width / 2 + x1),
-                        (int)(softwareBuffer.Heigth / 2 + y1),
-                        (int)(softwareBuffer.Width / 2 + x2),
-                        (int)(softwareBuffer.Heigth / 2 + y2),
-                        0x000000ff);
+                        (int)(x1),
+                        (int)(y1),
+                        (int)(x2),
+                        (int)(y2),
+                        0x00ff00ff);
                     softwareBuffer.DrawLine(
-                        (int)(softwareBuffer.Width / 2 + x2),
-                        (int)(softwareBuffer.Heigth / 2 + y2),
-                        (int)(softwareBuffer.Width / 2 + x3),
-                        (int)(softwareBuffer.Heigth / 2 + y3),
-                        0x000000ff);
+                        (int)(x2),
+                        (int)(y2),
+                        (int)(x3),
+                        (int)(y3),
+                        0x00ff00ff);
                     softwareBuffer.DrawLine(
-                        (int)(softwareBuffer.Width / 2 + x3),
-                        (int)(softwareBuffer.Heigth / 2 + y3),
-                        (int)(softwareBuffer.Width / 2 + x1),
-                        (int)(softwareBuffer.Heigth / 2 + y1),
-                        0x000000ff);
+                        (int)(x3),
+                        (int)(y3),
+                        (int)(x1),
+                        (int)(y1),
+                        0x00ff00ff);
+
                 }
                 //cube.Vertices
                 //DirectX::XMMATRIX P = DirectX::XMMatrixPerspectiveFovLH(1.0472f, _renderer->GetAspectRatio(), 0.3f, 1000.0f);

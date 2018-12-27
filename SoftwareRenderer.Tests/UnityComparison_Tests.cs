@@ -187,7 +187,6 @@ namespace SoftwareRenderer.Tests
                 Rotation = new Vector3(0, 45f, 0),
                 Scale = Vector3.One
             };
-
             _parent = new Transform
             {
                 Position = new Vector3(2, 0, 0),
@@ -195,7 +194,6 @@ namespace SoftwareRenderer.Tests
                 Scale = Vector3.One
             };
             _grandParent.AddChild(_parent);
-
             _child = new Transform
             {
                 Position = new Vector3(0, 0, 3),
