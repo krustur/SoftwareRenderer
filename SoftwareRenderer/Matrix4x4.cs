@@ -90,7 +90,6 @@ namespace SoftwareRenderer
         }
 
         public static Vector4 operator *(Matrix4X4 m, Vector3 v)
-            //public static Vector4 Transform(Vector3 v, Matrix4X4 m)
         {
             var result = new Vector4(
                 v.X * m[0][0] + v.Y * m[0][1] + v.Z * m[0][2] + m[0][3],
@@ -105,7 +104,6 @@ namespace SoftwareRenderer
             //    v.X * m[0][3] + v.Y * m[1][3] + v.Z * m[2][3] + 1 * m[3][3]
             //    );
             return result;
-            //v.X * m[0][3] + v.Y * m[1][3] + v.Z * m[2][3] + 1 * m[3][3]);
         }
 
 
@@ -164,17 +162,6 @@ namespace SoftwareRenderer
                 new Vector4(0, 0, 0, 1)
             );
         }
-        /*
-         
-        DirectX::XMMATRIX scaleMatrix = DirectX::XMMatrixScaling(_scale.x, _scale.y, _scale.z);
-		DirectX::XMMATRIX rotationMatrixX = DirectX::XMMatrixRotationX(_rotation.x);
-		DirectX::XMMATRIX rotationMatrixY = DirectX::XMMatrixRotationY(_rotation.y);
-		DirectX::XMMATRIX rotationMatrixZ = DirectX::XMMatrixRotationZ(_rotation.z);
-		DirectX::XMMATRIX translateMatrix = DirectX::XMMatrixTranslation(_position.x, _position.y, _position.z);
-
-		_localTransform = scaleMatrix * rotationMatrixX * rotationMatrixY * rotationMatrixZ * translateMatrix;
-
-         */
 
         public Vector4 this[int row]
         {
@@ -244,121 +231,21 @@ namespace SoftwareRenderer
             }
         }
 
-        public static Matrix4X4 CreatePerspectiveFieldOfViewNope(float fieldOfView, float aspectRatio, float near, float far)
+        //public static Matrix4X4 CreatePerspective(float left, float right, float bottom, float top, float fov, float near, float far)
+        public static Matrix4X4 CreatePerspective(float fieldOfViewDegrees, float aspectRatio, float near, float far)
         {
-            /*
- ( x  0  a  0 )       x = 2*near/(right-left)          y = 2*near/(top-bottom)
- ( 0  y  b  0 )       a = (right+left)/(right-left)    b = (top+bottom)/(top-bottom)
- ( 0  0  c  d )       c = -(far+near)/(far-near)       d = -(2*far*near)/(far-near)
- ( 0  0  e  0 )       e = -1
-            */
-            var right = 10;
-            var left = -10;
-            var top = 10;
-            var bottom = -10;
-
-            var x = 2 * near / (right - left);
-            var y = 2 * near / (top - bottom);
-            var a = (right + left) / (right - left);
-            var b = (top + bottom) / (top - bottom);
-            var c = (-(far + near)) / (far - near);
-            var d = (-(2 * far * near)) / (far - near);
-            var e = -1f;
-
-            return new Matrix4X4(
-                new Vector4(x, 0, a, 0),
-                new Vector4(0, y, b, 0),
-                new Vector4(0, 0, c, d),
-                new Vector4(0, 0, e, 0)
-                );
-        }
-
-        public static Matrix4X4 CreatePerspectiveFieldOfViewUnity(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
-        {
-            var yScale = (float) (1.0f / Math.Tan(fieldOfView * 0.5f));
-            var xScale = yScale / aspectRatio;
-
-            var negFarRange = /*float.IsPositiveInfinity(farPlaneDistance) ? -1.0f : */
-                farPlaneDistance / ((double) nearPlaneDistance - farPlaneDistance);
-
-            return new Matrix4X4(
-                new Vector4(xScale, 0, 0, 0),
-                new Vector4(0, yScale, 0, 0),
-                new Vector4(0, 0, (float) negFarRange, (float) (nearPlaneDistance * negFarRange)),
-                new Vector4(0, 0, -1, 0)
-            );
-
-        }
-
-        public static Matrix4X4 CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float near, float far)
-        {
-            var right = 320;
-            var left = -320;
-            var top = 240;
-            var bottom = -240;
-
-            return CreatePerspectiveFieldOfViewV2(left, right, bottom, top, near, far);
-        }
-
-        public static Matrix4X4 CreatePerspectiveFieldOfViewV2(float left, float right, float bottom, float top, float near, float far)
-        {
+            //var width = right - left;
+            //var heigth = top - bottom;
+            //float ar = width / heigth;
+            float zrange = near - far;
+            float tanhalffov = (float)Math.Tan(MathHelper.ToRadians(fieldOfViewDegrees / 2.0f));
 
             var persp = new Matrix4X4(
-                new Vector4((2 * near) / (right - left),    0,                          (right + left) / (right - left),    0),
-                new Vector4(0,                              (2*near) / (top - bottom),  (top + bottom) / (top - bottom),    0),
-                new Vector4(0,                              0,                          -((far + near) / (far - near)),     -((2 * near * far) / (far - near))),
-                new Vector4(0,                              0,                          -1f,                                0)
+                new Vector4(1.0f / (tanhalffov * aspectRatio),   0,                  0,                           0),
+                new Vector4(0,                                   1.0f / tanhalffov,  0,                           0),
+                new Vector4(0,                                   0,                  -((-near - far) / zrange),   2.0f * far * near / zrange),
+                new Vector4(0,                                   0,                 -1f,                          0)
                 );
-
-            //persp.R0.X *= right - left;
-            //persp.R0.Y *= top - bottom;
-
-            return persp;
-        }
-
-        public static Matrix4X4 CreatePerspectiveFieldOfViewV3(float left, float right, float bottom, float top, float fov, float near, float far)
-        {
-            //const float ar = m_persProj.Width / m_persProj.Height;
-            //const float zNear = m_persProj.zNear;
-            //const float zFar = m_persProj.zFar;
-            //const float zRange = zNear - zFar;
-            //const float tanHalfFOV = tanf(ToRadian(m_persProj.FOV / 2.0));
-
-            var width = right - left;
-            var heigth = top - bottom;
-            float ar = width / heigth;
-            float zRange = near - far;
-            float tanHalfFOV = (float)Math.Tan(MathHelper.ToRadians(fov / 2.0f));
-
-            //var m00 = 1.0f / (tanHalfFOV * ar);
-            //var m01 = 0.0f;
-            //var m02 = 0.0f;
-            //var m03 = 0.0f;
-
-            //var m10 = 0.0f;
-            //var m11 = 1.0f / tanHalfFOV;
-            //var m12 = 0.0f;
-            //var m13 = 0.0f;
-
-            //var m20 = 0.0f;
-            //var m21 = 0.0f;
-            //var m22 = (-near - far) / zRange;
-            //var m23 = 2.0f * far * near / zRange;
-
-            //var m30 = 0.0f;
-            //var m31 = 0.0f;
-            //var m32 = 1.0f;
-            //var m33 = 0.0f;
-
-            var persp = new Matrix4X4(
-                new Vector4(1.0f / (tanHalfFOV * ar),   0,                  0,                          0),
-                new Vector4(0,                          1.0f / tanHalfFOV,  0,                          0),
-                new Vector4(0,                          0,                  -((-near - far) / zRange),   2.0f * far * near / zRange),
-                new Vector4(0,                          0,                 -1f,                         0)
-                );
-
-            //persp.R0.X *= right - left;
-            //persp.R0.Y *= top - bottom;
 
             return persp;
         }

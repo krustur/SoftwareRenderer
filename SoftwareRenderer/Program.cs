@@ -118,8 +118,8 @@ namespace SoftwareRenderer
 
                 // Render test
                 //var world = Matrix4X4.Identity;
-                //var proj = Matrix4X4.CreatePerspectiveFieldOfView(1.0472f, (float)softwareBuffer.Heigth / softwareBuffer.Width, 0.3f, 1000);
-                var proj = Matrix4X4.CreatePerspectiveFieldOfViewV3(0, softwareBuffer.Width, 0, softwareBuffer.Heigth, 60.0f, 0.3f, 1000);
+                //var proj = Matrix4X4.CreatePerspectiveFieldOfView(0, softwareBuffer.Width, 0, softwareBuffer.Heigth, 60.0f, 0.3f, 1000);
+                var proj = Matrix4X4.CreatePerspective(60.0f, 1.33333f, 0.3f, 100);
 
                 //proj = Matrix4X4.Identity;
                 //var view = zerocamTransformInv;// cubeTransform * camTransform;//Matrix4X4.Identity;
