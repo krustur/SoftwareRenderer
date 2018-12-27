@@ -37,7 +37,7 @@ namespace SoftwareRenderer
             var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
             var cube = new BoxGeometryGenerator(0.5f);
             float cubeRot = 0;
-            var vertexBuffer = new Vector3[cube.Vertices.Length];
+            var vertexBuffer = new Vector4[cube.Vertices.Length];
 
             var lastTicks = SDL.SDL_GetTicks();
             // loop until done

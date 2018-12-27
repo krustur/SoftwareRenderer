@@ -310,25 +310,25 @@ namespace SoftwareRenderer
             float zRange = near - far;
             float tanHalfFOV = (float)Math.Tan(MathHelper.ToRadians(fov / 2.0f));
 
-            var m00 = 1.0f / (tanHalfFOV * ar);
-            var m01 = 0.0f;
-            var m02 = 0.0f;
-            var m03 = 0.0f;
+            //var m00 = 1.0f / (tanHalfFOV * ar);
+            //var m01 = 0.0f;
+            //var m02 = 0.0f;
+            //var m03 = 0.0f;
 
-            var m10 = 0.0f;
-            var m11 = 1.0f / tanHalfFOV;
-            var m12 = 0.0f;
-            var m13 = 0.0f;
+            //var m10 = 0.0f;
+            //var m11 = 1.0f / tanHalfFOV;
+            //var m12 = 0.0f;
+            //var m13 = 0.0f;
 
-            var m20 = 0.0f;
-            var m21 = 0.0f;
-            var m22 = (-near - far) / zRange;
-            var m23 = 2.0f * far * near / zRange;
+            //var m20 = 0.0f;
+            //var m21 = 0.0f;
+            //var m22 = (-near - far) / zRange;
+            //var m23 = 2.0f * far * near / zRange;
 
-            var m30 = 0.0f;
-            var m31 = 0.0f;
-            var m32 = 1.0f;
-            var m33 = 0.0f;
+            //var m30 = 0.0f;
+            //var m31 = 0.0f;
+            //var m32 = 1.0f;
+            //var m33 = 0.0f;
 
             var persp = new Matrix4X4(
                 new Vector4(1.0f / (tanHalfFOV * ar),   0,                  0,                          0),

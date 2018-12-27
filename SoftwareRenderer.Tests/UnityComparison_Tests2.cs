@@ -47,6 +47,10 @@ namespace SoftwareRenderer.Tests
         private Matrix4X4 _rotCubeTransformLocalToWorldInverseUnity;
         private Matrix4X4 _rotCubeTransformWorldToLocalUnity;
         private Matrix4X4 _rotCubeTransformWorldToLocalInverseUnity;
+        private Vector3 _rotCubeTransformLocalPositionUnity;
+        private Vector3 _rotCubeTransformWorldPositionUnity;
+        private Vector3 _rotCubeTransformLocalRotationUnity;
+        private Vector3 _rotCubeTransformWorldRotationUnity;
         private Matrix4X4 _grandParentTransform;
         private Matrix4X4 _grandParentTransformLocalToWorldUnity;
         private Matrix4X4 _grandParentTransformLocalToWorldInverseUnity;
@@ -74,9 +78,10 @@ namespace SoftwareRenderer.Tests
         private Vector3 _childTransformWorldPositionUnity;
         private Vector3 _childTransformLocalRotationUnity;
         private Vector3 _childTransformWorldRotationUnity;
-        private Vector3 _childViewPointInZeroCamera;
-        private Vector3 _childViewPointInZeroCameraUnity;
-        private Vector3 _childScreenPointInZeroCameraUnity;
+        
+        private Vector3 _grandParentViewPointInZeroCameraUnity;
+        private Vector3 _grandParentScreenPointInZeroCameraUnity;
+        private Vector4 _grandParentViewPointInZeroCamera;
 
         [TestInitialize]
         public void Init()
@@ -119,7 +124,7 @@ namespace SoftwareRenderer.Tests
             _cameraWorldToCameraInverse = _cameraWorldToCamera.Inverse();
             //_backwardsCameraTransform = _oneScale * camtranslation * camrotationZ * camrotationY * camrotationX;
 
-            _cameraProjection = Matrix4X4.CreatePerspectiveFieldOfViewV3(0, 1024, 0, 768, 60.0f, 0.3f, 1000);
+            _cameraProjection = Matrix4X4.CreatePerspectiveFieldOfViewV3(0, 2, 0, 1.5f, 60.0f, 0.3f, 1000);
             //_cameraTransformLocalToWorldMatrixUnity = new Matrix4X4(new Vector4(1f, 0f, 0f, 2.5f), new Vector4(0f, 0.9975641f, -0.06975646f, 1.5f), new Vector4(0f, 0.06975646f, 0.9975641f, 0f), new Vector4(0f, 0f, 0f, 1f));
             //_cameraTransformLocalToWorldMatrixInverseUnity = new Matrix4X4(new Vector4(1f, 0f, 0f, -2.5f), new Vector4(0f, 0.9975641f, 0.06975647f, -1.496346f), new Vector4(0f, -0.06975646f, 0.9975641f, 0.1046347f), new Vector4(0f, 0f, 0f, 1f));
             //_cameraTransformWorldToLocalMatrixUnity = new Matrix4X4(new Vector4(1f, 0f, 0f, -2.5f), new Vector4(0f, 0.9975641f, 0.06975646f, -1.496346f), new Vector4(0f, -0.06975646f, 0.9975641f, 0.1046347f), new Vector4(0f, 0f, 0f, 1f));
@@ -159,6 +164,11 @@ namespace SoftwareRenderer.Tests
             _rotCubeTransformLocalToWorldInverseUnity = new Matrix4X4(new Vector4(0.7880109f, 0f, -0.6156613f, 2.462645f), new Vector4(0f, 1f, 0f, 0f), new Vector4(0.6156613f, 0f, 0.7880108f, -3.152043f), new Vector4(0f, 0f, 0f, 1f));
             _rotCubeTransformWorldToLocalUnity = new Matrix4X4(new Vector4(0.7880109f, 0f, -0.6156613f, 2.462645f), new Vector4(0f, 1f, 0f, 0f), new Vector4(0.6156613f, 0f, 0.7880109f, -3.152044f), new Vector4(0f, 0f, 0f, 1f));
             _rotCubeTransformWorldToLocalInverseUnity = new Matrix4X4(new Vector4(0.7880109f, 0f, 0.6156613f, 0f), new Vector4(0f, 1f, 0f, 0f), new Vector4(-0.6156613f, 0f, 0.7880108f, 4f), new Vector4(0f, 0f, 0f, 1f));
+            _rotCubeTransformLocalPositionUnity = new Vector3(0f, 0f, 4f);
+            _rotCubeTransformWorldPositionUnity = new Vector3(0f, 0f, 4f);
+            _rotCubeTransformLocalRotationUnity = new Vector3(0f, 37.99999f, 0f);
+            _rotCubeTransformWorldRotationUnity = new Vector3(0f, 37.99999f, 0f);
+
 
             // GrandParent
             var grandParentTranslation = Matrix4X4.CreateTranslation(new Vector3(2, 0.25f, 5));
@@ -175,7 +185,7 @@ namespace SoftwareRenderer.Tests
             _grandParentTransformWorldToLocalUnity = new Matrix4X4(new Vector4(0.7071068f, 0f, -0.7071068f, 2.12132f), new Vector4(0f, 1f, 0f, -0.25f), new Vector4(0.7071068f, 0f, 0.7071068f, -4.949748f), new Vector4(0f, 0f, 0f, 1f));
             _grandParentTransformWorldToLocalInverseUnity = new Matrix4X4(new Vector4(0.7071068f, 0f, 0.7071066f, 2f), new Vector4(0f, 1f, 0f, 0.25f), new Vector4(-0.7071067f, 0f, 0.7071068f, 5f), new Vector4(0f, 0f, 0f, 1f));
             _grandParentTransformLocalPositionUnity = new Vector3(2f, 0.25f, 5f);
-            _grandParentTransformWorldPositionUnity = new Vector3(2f, 0.25f, 5f);
+            _grandParentTransformWorldPositionUnity = new Vector3(2f, 0.25f, 5f); // this!
             _grandParentTransformLocalRotationUnity = new Vector3(0f, 45f, 0f);
             _grandParentTransformWorldRotationUnity = new Vector3(0f, 45f, 0f);
 
@@ -209,20 +219,29 @@ namespace SoftwareRenderer.Tests
             _childTransformWorldToLocalUnity = new Matrix4X4(new Vector4(0.7071068f, 0f, -0.7071068f, 0.1213202f), new Vector4(-0.5f, 0.7071068f, -0.5f, 3.323223f), new Vector4(0.5f, 0.7071068f, 0.5000001f, -6.676777f), new Vector4(0f, 0f, 0f, 1f));
             _childTransformWorldToLocalInverseUnity = new Matrix4X4(new Vector4(0.7071067f, -0.4999999f, 0.5f, 4.914214f), new Vector4(0f, 0.7071067f, 0.7071067f, 2.37132f), new Vector4(-0.7071068f, -0.5f, 0.5000001f, 5.085787f), new Vector4(0f, 0f, 0f, 1f));
             _childTransformLocalPositionUnity = new Vector3(0f, 0f, 3f);
-            _childTransformWorldPositionUnity = new Vector3(4.914214f, 2.37132f, 5.085786f); // this!
+            _childTransformWorldPositionUnity = new Vector3(4.914214f, 2.37132f, 5.085786f);
             _childTransformLocalRotationUnity = new Vector3(0f, 0f, 0f);
             _childTransformWorldRotationUnity = new Vector3(315f, 45f, 1.207418E-06f);
 
 
             //
-            //var xxx = _zeroCameraWorldToCamera * _cameraProjection;
+            var xxx = _cameraProjection * _zeroCameraWorldToCamera;
             //var xxx = _cameraProjection * _zeroCameraWorldToCamera;
             //var xxx = _cameraProjection;
-            var xxx = _zeroCameraWorldToCamera;
-            _childViewPointInZeroCamera = Vector3.Transform(_childTransformWorldPositionUnity, xxx);
+            //var xxx = _zeroCameraWorldToCamera;
+            _grandParentViewPointInZeroCamera = Vector3.Transform(_grandParentTransformWorldPositionUnity, xxx);
+            _grandParentViewPointInZeroCamera.X /= _grandParentViewPointInZeroCamera.W;
+            _grandParentViewPointInZeroCamera.Y /= _grandParentViewPointInZeroCamera.W;
+            _grandParentViewPointInZeroCamera.Z /= _grandParentViewPointInZeroCamera.W;
+            _grandParentViewPointInZeroCamera.X += 1f;
+            _grandParentViewPointInZeroCamera.Y += 1f;
+            _grandParentViewPointInZeroCamera.Z += 1f;
+            _grandParentViewPointInZeroCamera.X *= 0.5f;
+            _grandParentViewPointInZeroCamera.Y *= 0.5f;
+            _grandParentViewPointInZeroCamera.Z *= 0.5f;
 
-            _childViewPointInZeroCameraUnity = new Vector3(1.127607f, 0.9037967f, 5.085786f);
-            _childScreenPointInZeroCameraUnity = new Vector3(1154.67f, 694.1158f, 5.085786f);
+            _grandParentViewPointInZeroCameraUnity = new Vector3(0.7598076f, 0.5433013f, 5f);
+            _grandParentScreenPointInZeroCameraUnity = new Vector3(778.043f, 417.2554f, 5f);
 
         }
 
@@ -349,7 +368,9 @@ namespace SoftwareRenderer.Tests
         [TestMethod]
         public void UnityComparison_Tests2_ChildViewPointInZeroCamera()
         {
-            Assert.AreEqual(_childViewPointInZeroCameraUnity, _childViewPointInZeroCamera);
+            Assert.AreEqual(_grandParentViewPointInZeroCameraUnity.X, _grandParentViewPointInZeroCamera.X);
+            Assert.AreEqual(_grandParentViewPointInZeroCameraUnity.Y, _grandParentViewPointInZeroCamera.Y);
+            //Assert.AreEqual(_grandParentViewPointInZeroCameraUnity.Z, _grandParentViewPointInZeroCamera.Z);
         }
     }
 

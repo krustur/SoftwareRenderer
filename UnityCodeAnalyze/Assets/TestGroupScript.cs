@@ -88,7 +88,7 @@ public class TestGroupScript : MonoBehaviour {
 		MyHelper.printVector("_grandParentViewPointInZeroCameraUnity", grandParentViewPointInZeroCamera);
 		MyHelper.printVector("_grandParentScreenPointInZeroCameraUnity", grandParentScreenPointInZeroCamera);
 
-		var xxx = (zeroCamera.worldToCameraMatrix * zeroCamera.projectionMatrix) * grandParent.GetComponent<Transform> ().position;
+		var xxx = (zeroCamera.projectionMatrix * zeroCamera.worldToCameraMatrix) * grandParent.GetComponent<Transform> ().position;
 		MyHelper.printVector("WorldPos:  ", grandParent.GetComponent<Transform> ().position);
 		MyHelper.printVector("ViewPos: ", xxx);
 		//var yyy = zeroCamera.projectionMatrix * xxx;
@@ -104,32 +104,8 @@ public class TestGroupScript : MonoBehaviour {
 
 		var childViewPointInCamera = camera.WorldToViewportPoint (child.GetComponent<Transform>().position);
 		var childScreenPointInCamera = camera.WorldToScreenPoint (child.GetComponent<Transform>().position);
-
 		MyHelper.printVector("_childViewPointInCameraUnity", childViewPointInCamera);
 		MyHelper.printVector("_childScreenPointInCameraUnity", childScreenPointInCamera);
-
-		//MyHelper.printScreenPos("Grand parent screen pos", camera, grandparentTransform);
-		//MyHelper.printVector3 ("Grand parent local position", grandparentTransform.localPosition);
-		//MyHelper.printVector3 ("Grand parent position", grandparentTransform.position);
-
-
-		//var grandparentTransform = GameObject.Find("/TestGroup/GrandParent").GetComponent<Transform>();
-		//MyHelper.printScreenPos("Grand parent screen pos", camera, grandparentTransform);
-		//MyHelper.printVector3 ("Grand parent local position", grandparentTransform.localPosition);
-		//MyHelper.printVector3 ("Grand parent position", grandparentTransform.position);
-
-		//MyHelper.printMatrix ("Grand parent local rotation", Matrix4x4.TRS(grandparentTransform.localPosition, grandparentTransform.localRotation, grandparentTransform.localScale));
-		//MyHelper.printMatrix ("Grand parent world rotation", Matrix4x4.TRS(grandparentTransform.position, grandparentTransform.rotation, grandparentTransform.lossyScale));
-
-		//MyHelper.printVector3 ("Grand parent local rotation (Q)", grandparentTransform.localRotation.eulerAngles);
-		//MyHelper.printVector3 ("Grand parent rotation (Q)", grandparentTransform.rotation.eulerAngles);
-
-		//var parentTransform = GameObject.Find("/TestGroup/GrandParent/Parent").GetComponent<Transform>();
-		//MyHelper.printScreenPos("Parent screen pos", camera, parentTransform);
-		//MyHelper.printVector3 ("Parent local position", parentTransform.localPosition);
-		//MyHelper.printVector3 ("Parent position", parentTransform.position);
-		//MyHelper.printVector3 ("Parent local rotation", parentTransform.localRotation.eulerAngles);
-		//MyHelper.printVector3 ("Parent rotation", parentTransform.rotation.eulerAngles);
 		}
 	
 	// Update is called once per frame
