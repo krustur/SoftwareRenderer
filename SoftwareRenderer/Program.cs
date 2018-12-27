@@ -4,7 +4,7 @@ using SDL2;
 
 namespace SoftwareRenderer
 {
-    class Program
+    public class Program
     {
         private const int WindowWidth = 1024;
         private const int WindowHeight = 768;
@@ -49,7 +49,6 @@ namespace SoftwareRenderer
             camera.Transform.Rotation = new Vector3(4f, 0, 0);
             camera.Transform.Scale = Vector3.One;
 
-            // RotCube
             float cubeRot = 0;
             var rotCube = new Transform
             {
@@ -211,16 +210,8 @@ namespace SoftwareRenderer
                         (int)(x1),
                         (int)(y1),
                         0x00ff00ff);
-
                 }
-                //cube.Vertices
-                //DirectX::XMMATRIX P = DirectX::XMMatrixPerspectiveFovLH(1.0472f, _renderer->GetAspectRatio(), 0.3f, 1000.0f);
-                //XMStoreFloat4x4(&_projectionMatrix, P);
-                //DirectX::XMMATRIX view = XMLoadFloat4x4(&_cube1ViewMatrix);
-                //DirectX::XMMATRIX worldViewProj = world*view*proj;
-
-                //_meshRenderer.RenderMesh(_cube1Mesh, &worldViewProj);
-
+              
                 // Software buffer to Texture
                 fixed (uint* fixedSoftwareBuffer = softwareBuffer.Buffer)
                 {
