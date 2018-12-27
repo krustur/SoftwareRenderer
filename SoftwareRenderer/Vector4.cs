@@ -112,7 +112,7 @@ namespace SoftwareRenderer
             return !(lhs == rhs);
         }
 
-        public float this[int i] 
+        public float this[int i]
         {
             get
             {
@@ -129,10 +129,18 @@ namespace SoftwareRenderer
             {
                 switch (i)
                 {
-                    case 0: X = value; return;
-                    case 1: Y = value; return;
-                    case 2: Z = value; return;
-                    case 3: W = value; return;
+                    case 0:
+                        X = value;
+                        return;
+                    case 1:
+                        Y = value;
+                        return;
+                    case 2:
+                        Z = value;
+                        return;
+                    case 3:
+                        W = value;
+                        return;
                     default: throw new ArgumentOutOfRangeException(nameof(i));
                 }
             }

@@ -184,6 +184,7 @@ namespace SoftwareRenderer.Tests
             Assert.AreEqual(_transformRef.M44, _transform[3][3]);
         }
         
+        [Ignore]
         [TestMethod]
         public void SystemNumericComparison_Tests_PerspFov()
         {
@@ -205,6 +206,7 @@ namespace SoftwareRenderer.Tests
             Assert.AreEqual(_perspFovRef.M44, _perspFov[3][3]);
         }
 
+        [Ignore]
         [TestMethod]
         public void SystemNumericComparison_Tests_Invert()
         {

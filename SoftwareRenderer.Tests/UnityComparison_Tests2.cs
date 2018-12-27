@@ -82,6 +82,9 @@ namespace SoftwareRenderer.Tests
         private Vector3 _grandParentViewPointInZeroCameraUnity;
         private Vector3 _grandParentScreenPointInZeroCameraUnity;
         private Vector4 _grandParentViewPointInZeroCamera;
+        private Transform _grandParent;
+        private Transform _parent;
+        private Transform _child;
 
         [TestInitialize]
         public void Init()
@@ -171,11 +174,11 @@ namespace SoftwareRenderer.Tests
 
 
             // GrandParent
-            var grandParentTranslation = Matrix4X4.CreateTranslation(new Vector3(2, 0.25f, 5));
-            var grandParentRotationX = Matrix4X4.CreateRotationX(0);
-            var grandParentRotationY = Matrix4X4.CreateRotationY(MathHelper.ToRadians(45f));
-            var grandParentRotationZ = Matrix4X4.CreateRotationZ(0);
-            _grandParentTransform = _oneScale * grandParentTranslation * grandParentRotationZ * grandParentRotationY * grandParentRotationX;
+            //var grandParentTranslation = Matrix4X4.CreateTranslation(new Vector3(2, 0.25f, 5));
+            //var grandParentRotationX = Matrix4X4.CreateRotationX(0);
+            //var grandParentRotationY = Matrix4X4.CreateRotationY(MathHelper.ToRadians(45f));
+            //var grandParentRotationZ = Matrix4X4.CreateRotationZ(0);
+            //_grandParentTransform = _oneScale * grandParentTranslation * grandParentRotationZ * grandParentRotationY * grandParentRotationX;
             _grandParentTransformLocalToWorldUnity = new Matrix4X4(
                 new Vector4(0.7071068f, 0f, 0.7071068f, 2f),
                 new Vector4(0f, 1f, 0f, 0.25f),
@@ -190,11 +193,11 @@ namespace SoftwareRenderer.Tests
             _grandParentTransformWorldRotationUnity = new Vector3(0f, 45f, 0f);
 
             // Parent
-            var parentTranslation = Matrix4X4.CreateTranslation(new Vector3(2, 0, 0));
-            var parentRotationX = Matrix4X4.CreateRotationX(MathHelper.ToRadians(-45f));
-            var parentRotationY = Matrix4X4.CreateRotationY(0);
-            var parentRotationZ = Matrix4X4.CreateRotationZ(0);
-            _parentTransform = _oneScale * _grandParentTransform * parentTranslation * parentRotationZ * parentRotationY * parentRotationX;
+            //var parentTranslation = Matrix4X4.CreateTranslation(new Vector3(2, 0, 0));
+            //var parentRotationX = Matrix4X4.CreateRotationX(MathHelper.ToRadians(-45f));
+            //var parentRotationY = Matrix4X4.CreateRotationY(0);
+            //var parentRotationZ = Matrix4X4.CreateRotationZ(0);
+            //_parentTransform = _oneScale * _grandParentTransform * parentTranslation * parentRotationZ * parentRotationY * parentRotationX;
             _parentTransformLocalToWorldUnity = new Matrix4X4(
                 new Vector4(0.7071068f, -0.5f, 0.5f, 3.414214f),
                 new Vector4(0f, 0.7071068f, 0.7071068f, 0.25f),
@@ -209,11 +212,11 @@ namespace SoftwareRenderer.Tests
             _parentTransformWorldRotationUnity = new Vector3(315f, 45f, 1.207418E-06f);
 
             // Child
-            var childTranslation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 3));
-            var childRotationX = Matrix4X4.CreateRotationX(0);
-            var childRotationY = Matrix4X4.CreateRotationY(0);
-            var childRotationZ = Matrix4X4.CreateRotationZ(0);
-            _childTransform = _oneScale * _parentTransform * childTranslation * childRotationZ * childRotationY * childRotationX;
+            //var childTranslation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 3));
+            //var childRotationX = Matrix4X4.CreateRotationX(0);
+            //var childRotationY = Matrix4X4.CreateRotationY(0);
+            //var childRotationZ = Matrix4X4.CreateRotationZ(0);
+            //_childTransform = _oneScale * _parentTransform * childTranslation * childRotationZ * childRotationY * childRotationX;
             _childTransformLocalToWorldUnity = new Matrix4X4(new Vector4(0.7071068f, -0.5f, 0.5f, 4.914214f), new Vector4(0f, 0.7071068f, 0.7071068f, 2.37132f), new Vector4(-0.7071068f, -0.5f, 0.5000001f, 5.085787f), new Vector4(0f, 0f, 0f, 1f));
             _childTransformLocalToWorldInverseUnity = new Matrix4X4(new Vector4(0.7071067f, 0f, -0.7071067f, 0.1213204f), new Vector4(-0.5f, 0.7071068f, -0.5000001f, 3.323224f), new Vector4(0.5f, 0.7071067f, 0.5f, -6.676776f), new Vector4(0f, 0f, 0f, 1f));
             _childTransformWorldToLocalUnity = new Matrix4X4(new Vector4(0.7071068f, 0f, -0.7071068f, 0.1213202f), new Vector4(-0.5f, 0.7071068f, -0.5f, 3.323223f), new Vector4(0.5f, 0.7071068f, 0.5000001f, -6.676777f), new Vector4(0f, 0f, 0f, 1f));
@@ -242,6 +245,29 @@ namespace SoftwareRenderer.Tests
 
             _grandParentViewPointInZeroCameraUnity = new Vector3(0.7598076f, 0.5433013f, 5f);
             _grandParentScreenPointInZeroCameraUnity = new Vector3(778.043f, 417.2554f, 5f);
+
+            _grandParent = new Transform
+            {
+                Position = new Vector3(2, 0.25f, 5),
+                Rotation = new Vector3(0, 45f, 0),
+                Scale = Vector3.One
+            };
+
+            _parent = new Transform
+            {
+                Position = new Vector3(2, 0, 0),
+                Rotation = new Vector3(-45, 0, 0),
+                Scale = Vector3.One
+            };
+            _grandParent.AddChild(_parent);
+
+            _child = new Transform
+            {
+                Position = new Vector3(0, 0, 3),
+                Rotation = Vector3.Zero,
+                Scale = Vector3.One
+            };
+            _parent.AddChild(_child);
 
         }
 
@@ -350,19 +376,19 @@ namespace SoftwareRenderer.Tests
         [TestMethod]
         public void UnityComparison_Tests2_GrandParentTransformLocalToWorld()
         {
-            Assert.AreEqual(_grandParentTransformLocalToWorldUnity, _grandParentTransform);
+            Assert.AreEqual(_grandParentTransformLocalToWorldUnity, _grandParent.LocalToWorldTransform);
         }
 
         [TestMethod]
         public void UnityComparison_Tests2_ParentTransformLocalToWorld()
         {
-            Assert.AreEqual(_parentTransformLocalToWorldUnity, _parentTransform);
+            Assert.AreEqual(_parentTransformLocalToWorldUnity, _parent.LocalToWorldTransform);
         }
 
         [TestMethod]
         public void UnityComparison_Tests2_ChildTransformLocalToWorld()
         {
-            Assert.AreEqual(_childTransformLocalToWorldUnity, _childTransform);
+            Assert.AreEqual(_childTransformLocalToWorldUnity, _child.LocalToWorldTransform);
         }
 
         [TestMethod]
