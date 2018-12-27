@@ -133,7 +133,8 @@ namespace SoftwareRenderer
                 foreach (var cubeVertex in cube.Vertices)
                 {
                     //var test = Vector4.Transform(cubeVertex, rotcubecubeTransform * zerocamViewTransform * proj);
-                    var inClipSpace = Vector4.Transform(cubeVertex, thisTransform);
+                    //var inClipSpace = Vector4.Transform(cubeVertex, thisTransform);
+                    var inClipSpace = thisTransform * cubeVertex;
 
                     inClipSpace.X /= inClipSpace.W;
                     inClipSpace.Y /= inClipSpace.W;

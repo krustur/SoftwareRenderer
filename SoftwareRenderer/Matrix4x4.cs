@@ -89,6 +89,26 @@ namespace SoftwareRenderer
             );
         }
 
+        public static Vector4 operator *(Matrix4X4 m, Vector3 v)
+            //public static Vector4 Transform(Vector3 v, Matrix4X4 m)
+        {
+            var result = new Vector4(
+                v.X * m[0][0] + v.Y * m[0][1] + v.Z * m[0][2] + m[0][3],
+                v.X * m[1][0] + v.Y * m[1][1] + v.Z * m[1][2] + m[1][3],
+                v.X * m[2][0] + v.Y * m[2][1] + v.Z * m[2][2] + m[2][3],
+                v.X * m[3][0] + v.Y * m[3][1] + v.Z * m[3][2] + m[3][3]
+            );
+            //var result = new Vector4(
+            //    v.X * m[0][0] + v.Y * m[1][0] + v.Z * m[2][0] + 1 * m[3][0],
+            //    v.X * m[0][1] + v.Y * m[1][1] + v.Z * m[2][1] + 1 * m[3][1],
+            //    v.X * m[0][2] + v.Y * m[1][2] + v.Z * m[2][2] + 1 * m[3][2],
+            //    v.X * m[0][3] + v.Y * m[1][3] + v.Z * m[2][3] + 1 * m[3][3]
+            //    );
+            return result;
+            //v.X * m[0][3] + v.Y * m[1][3] + v.Z * m[2][3] + 1 * m[3][3]);
+        }
+
+
         public static Matrix4X4 CreateTranslation(Vector3 translation)
         {
             return new Matrix4X4(
