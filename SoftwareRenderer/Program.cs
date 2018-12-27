@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SDL2;
 
 
@@ -142,76 +143,111 @@ namespace SoftwareRenderer
 
 
                 // Render test
-                var activeCamera = camera;           
-                var verticeCount = 0;
-                var modelViewTransform = activeCamera.Projection * activeCamera.WorldToCamera * rotCube.LocalToWorldTransform;
-                foreach (var cubeVertex in cube.Vertices)
+                var activeCamera = camera;
+                var sceneObjects = new List<SceneObject>()
                 {
-                    var inClipSpace = modelViewTransform * cubeVertex;
+                    new SceneObject
+                    {
+                        Vertices = cube.Vertices,
+                        Indices = cube.Indices,
+                        Transform = rotCube,
+                        Color = 0x00ff00ff
+                    },
+                    new SceneObject
+                    {
+                        Vertices = cube.Vertices,
+                        Indices = cube.Indices,
+                        Transform = grandParent,
+                        Color = 0x00ff0000
+                    },
+                    new SceneObject
+                    {
+                        Vertices = cube.Vertices,
+                        Indices = cube.Indices,
+                        Transform = parent,
+                        Color = 0x0000ff00
+                    },
+                    new SceneObject
+                    {
+                        Vertices = cube.Vertices,
+                        Indices = cube.Indices,
+                        Transform = child,
+                        Color = 0x000000ff
+                    },
+                };
+                foreach (var sceneObject in sceneObjects)
+                {
 
-                    inClipSpace.X /= inClipSpace.W;
-                    inClipSpace.Y /= inClipSpace.W;
-                    inClipSpace.Z /= inClipSpace.W;
-                    inClipSpace.X += 1f;
-                    inClipSpace.Y += 1f;
-                    inClipSpace.X *= 0.5f;
-                    inClipSpace.Y *= 0.5f;
-                    inClipSpace.X *= softwareBuffer.Width;
-                    inClipSpace.Y *= softwareBuffer.Heigth;
-                    inClipSpace.Z *= 0.5f;
+                    var modelViewTransform = activeCamera.Projection * activeCamera.WorldToCamera * sceneObject.Transform.LocalToWorldTransform;
+                    var verticeCount = 0;
+                    foreach (var vertex in sceneObject.Vertices)
+                    {
+                        var inClipSpace = modelViewTransform * vertex;
 
-                    vertexBuffer[verticeCount++] = inClipSpace;
+                        inClipSpace.X /= inClipSpace.W;
+                        inClipSpace.Y /= inClipSpace.W;
+                        inClipSpace.Z /= inClipSpace.W;
+                        inClipSpace.X += 1f;
+                        inClipSpace.Y += 1f;
+                        inClipSpace.X *= 0.5f;
+                        inClipSpace.Y *= 0.5f;
+                        inClipSpace.X *= softwareBuffer.Width;
+                        inClipSpace.Y *= softwareBuffer.Heigth;
+                        inClipSpace.Z *= 0.5f;
+
+                        vertexBuffer[verticeCount++] = inClipSpace;
+                    }
+
+                    for (int face = 0; face < sceneObject.Indices.Length / 3; face++)
+                    {
+                        var i1 = cube.Indices[face * 3 + 0];
+                        var i2 = cube.Indices[face * 3 + 1];
+                        var i3 = cube.Indices[face * 3 + 2];
+                        var x1 = vertexBuffer[i1].X;
+                        var y1 = vertexBuffer[i1].Y;
+                        var x2 = vertexBuffer[i2].X;
+                        var y2 = vertexBuffer[i2].Y;
+                        var x3 = vertexBuffer[i3].X;
+                        var y3 = vertexBuffer[i3].Y;
+                        //softwareBuffer.DrawLine(
+                        //    (int)(softwareBuffer.Width / 2 + x1),
+                        //    (int)(softwareBuffer.Heigth / 2 + y1),
+                        //    (int)(softwareBuffer.Width / 2 + x2),
+                        //    (int)(softwareBuffer.Heigth / 2 + y2),
+                        //    0x000000ff);
+                        //softwareBuffer.DrawLine(
+                        //    (int)(softwareBuffer.Width / 2 + x2),
+                        //    (int)(softwareBuffer.Heigth / 2 + y2),
+                        //    (int)(softwareBuffer.Width / 2 + x3),
+                        //    (int)(softwareBuffer.Heigth / 2 + y3),
+                        //    0x000000ff);
+                        //softwareBuffer.DrawLine(
+                        //    (int)(softwareBuffer.Width / 2 + x3),
+                        //    (int)(softwareBuffer.Heigth / 2 + y3),
+                        //    (int)(softwareBuffer.Width / 2 + x1),
+                        //    (int)(softwareBuffer.Heigth / 2 + y1),
+                        //    0x000000ff);
+                        softwareBuffer.DrawLine(
+                            (int) (x1),
+                            (int) (y1),
+                            (int) (x2),
+                            (int) (y2),
+                            sceneObject.Color);
+                        softwareBuffer.DrawLine(
+                            (int) (x2),
+                            (int) (y2),
+                            (int) (x3),
+                            (int) (y3),
+                            sceneObject.Color);
+                        softwareBuffer.DrawLine(
+                            (int) (x3),
+                            (int) (y3),
+                            (int) (x1),
+                            (int) (y1),
+                            sceneObject.Color);
+                    }
                 }
 
-                for (int face = 0; face < cube.Indices.Length / 3; face++)
-                {
-                    var i1 = cube.Indices[face * 3 + 0];
-                    var i2 = cube.Indices[face * 3 + 1];
-                    var i3 = cube.Indices[face * 3 + 2];
-                    var x1 = vertexBuffer[i1].X;
-                    var y1 = vertexBuffer[i1].Y;
-                    var x2 = vertexBuffer[i2].X;
-                    var y2 = vertexBuffer[i2].Y;
-                    var x3 = vertexBuffer[i3].X;
-                    var y3 = vertexBuffer[i3].Y;
-                    //softwareBuffer.DrawLine(
-                    //    (int)(softwareBuffer.Width / 2 + x1),
-                    //    (int)(softwareBuffer.Heigth / 2 + y1),
-                    //    (int)(softwareBuffer.Width / 2 + x2),
-                    //    (int)(softwareBuffer.Heigth / 2 + y2),
-                    //    0x000000ff);
-                    //softwareBuffer.DrawLine(
-                    //    (int)(softwareBuffer.Width / 2 + x2),
-                    //    (int)(softwareBuffer.Heigth / 2 + y2),
-                    //    (int)(softwareBuffer.Width / 2 + x3),
-                    //    (int)(softwareBuffer.Heigth / 2 + y3),
-                    //    0x000000ff);
-                    //softwareBuffer.DrawLine(
-                    //    (int)(softwareBuffer.Width / 2 + x3),
-                    //    (int)(softwareBuffer.Heigth / 2 + y3),
-                    //    (int)(softwareBuffer.Width / 2 + x1),
-                    //    (int)(softwareBuffer.Heigth / 2 + y1),
-                    //    0x000000ff);
-                    softwareBuffer.DrawLine(
-                        (int)(x1),
-                        (int)(y1),
-                        (int)(x2),
-                        (int)(y2),
-                        0x00ff00ff);
-                    softwareBuffer.DrawLine(
-                        (int)(x2),
-                        (int)(y2),
-                        (int)(x3),
-                        (int)(y3),
-                        0x00ff00ff);
-                    softwareBuffer.DrawLine(
-                        (int)(x3),
-                        (int)(y3),
-                        (int)(x1),
-                        (int)(y1),
-                        0x00ff00ff);
-                }
-              
                 // Software buffer to Texture
                 fixed (uint* fixedSoftwareBuffer = softwareBuffer.Buffer)
                 {
@@ -273,4 +309,11 @@ namespace SoftwareRenderer
 
     }
 
+    public class SceneObject
+    {
+        public Vector3[] Vertices { get; set; }
+        public uint[] Indices { get; set; }
+        public Transform Transform { get; set; }
+        public uint Color { get; set; }
+    }
 }
