@@ -229,7 +229,7 @@ namespace SoftwareRenderer.Tests
             //var xxx = _cameraProjection * _zeroCameraWorldToCamera;
             //var xxx = _cameraProjection;
             //var xxx = _zeroCameraWorldToCamera;
-            _grandParentViewPointInZeroCamera = Vector3.Transform(_grandParentTransformWorldPositionUnity, xxx);
+            _grandParentViewPointInZeroCamera = Vector4.Transform(_grandParentTransformWorldPositionUnity, xxx);
             _grandParentViewPointInZeroCamera.X /= _grandParentViewPointInZeroCamera.W;
             _grandParentViewPointInZeroCamera.Y /= _grandParentViewPointInZeroCamera.W;
             _grandParentViewPointInZeroCamera.Z /= _grandParentViewPointInZeroCamera.W;

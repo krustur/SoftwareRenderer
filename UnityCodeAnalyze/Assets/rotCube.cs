@@ -24,7 +24,7 @@ public class rotCube : MonoBehaviour {
 			Quaternion rotation = Quaternion.Euler (0, yrot, 0);
 			//Matrix4x4 matrix = Matrix4x4.Rotate (rotation);
 
-			//cube.rotation = rotation;
+			cube.rotation = rotation;
 		}
 	}
 }

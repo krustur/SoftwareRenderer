@@ -6,8 +6,8 @@ namespace SoftwareRenderer
 {
     class Program
     {
-        private const int WindowWidth = 640;
-        private const int WindowHeight = 480;
+        private const int WindowWidth = 1024;
+        private const int WindowHeight = 768;
         private static bool _running = true;
         private static uint _cnt = 0;
 
@@ -105,7 +105,7 @@ namespace SoftwareRenderer
                 var camrotationX = Matrix4X4.CreateRotationX(MathHelper.ToRadians(4));
                 var camrotationY = Matrix4X4.CreateRotationY(0);
                 var camrotationZ = Matrix4X4.CreateRotationZ(0);
-                var camTransform = oneScale * camrotationZ * camrotationY * camrotationX * camtranslation;
+                var camTransform = oneScale * camtranslation * camrotationZ * camrotationY * camrotationX;
                 var camViewTransform = camTransform.Inverse();
 
                 // RotCube
@@ -113,7 +113,7 @@ namespace SoftwareRenderer
                 var rotcuberotationX = Matrix4X4.CreateRotationX(0);
                 var rotcuberotationY = Matrix4X4.CreateRotationY(cubeRot);
                 var rotcuberotationZ = Matrix4X4.CreateRotationZ(0);
-                var rotcubecubeTransform = oneScale * rotcuberotationZ * rotcuberotationY * rotcuberotationX * rotcubetranslation;
+                var rotcubecubeTransform = oneScale * rotcubetranslation * rotcuberotationZ * rotcuberotationY * rotcuberotationX;
                 cubeRot += 0.003f;
 
                 // Render test
@@ -128,12 +128,22 @@ namespace SoftwareRenderer
 
                 //var rotcubeworld
                 var verticeCount = 0;
-                var thisTransform = rotcubecubeTransform * zerocamViewTransform * proj;
+                var thisTransform = proj * rotcubecubeTransform * zerocamViewTransform;
                 //thisTransform = rotcubecubeTransform;
                 foreach (var cubeVertex in cube.Vertices)
                 {
-                    var test = Vector3.Transform(cubeVertex, rotcubecubeTransform * zerocamViewTransform * proj);
-                    var inClipSpace = Vector3.Transform(cubeVertex, thisTransform);
+                    //var test = Vector4.Transform(cubeVertex, rotcubecubeTransform * zerocamViewTransform * proj);
+                    var inClipSpace = Vector4.Transform(cubeVertex, thisTransform);
+
+                    inClipSpace.X /= inClipSpace.W;
+                    inClipSpace.Y /= inClipSpace.W;
+                    inClipSpace.Z /= inClipSpace.W;
+                    //inClipSpace.X += 1f;
+                    //inClipSpace.Y += 1f;
+                    //inClipSpace.Z += 1f;
+                    inClipSpace.X *= softwareBuffer.Width * 0.5f;
+                    inClipSpace.Y *= softwareBuffer.Heigth * 0.5f;
+                    inClipSpace.Z *= 0.5f;
 
                     //var inClipSpace = Vector3.Transform(inCameraSpace, proj);
                     //var inCameraSpace2 = new Vector3(inCameraSpace.X, inCameraSpace.Y, inCameraSpace.Z + 1.55f);
@@ -151,8 +161,8 @@ namespace SoftwareRenderer
 
                 for (int face = 0; face < cube.Indices.Length / 3; face++)
                 {
-                    var pixScaleX = softwareBuffer.Width;
-                    var pixScaleY = softwareBuffer.Heigth;
+                    var pixScaleX = 1;// softwareBuffer.Width;
+                    var pixScaleY = 1;// softwareBuffer.Heigth;
                     var i1 = cube.Indices[face * 3 + 0];
                     var i2 = cube.Indices[face * 3 + 1];
                     var i3 = cube.Indices[face * 3 + 2];

@@ -102,10 +102,10 @@ public class TestGroupScript : MonoBehaviour {
 
 
 
-		var childViewPointInCamera = camera.WorldToViewportPoint (child.GetComponent<Transform>().position);
-		var childScreenPointInCamera = camera.WorldToScreenPoint (child.GetComponent<Transform>().position);
-		MyHelper.printVector("_childViewPointInCameraUnity", childViewPointInCamera);
-		MyHelper.printVector("_childScreenPointInCameraUnity", childScreenPointInCamera);
+		//var childViewPointInCamera = camera.WorldToViewportPoint (child.GetComponent<Transform>().position);
+		//var childScreenPointInCamera = camera.WorldToScreenPoint (child.GetComponent<Transform>().position);
+		//MyHelper.printVector("_childViewPointInCameraUnity", childViewPointInCamera);
+		//MyHelper.printVector("_childScreenPointInCameraUnity", childScreenPointInCamera);
 		}
 	
 	// Update is called once per frame
