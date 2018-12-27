@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SoftwareRenderer.Tests
+﻿namespace SoftwareRenderer
 {
     public class Camera
     {

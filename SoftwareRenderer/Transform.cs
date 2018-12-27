@@ -67,7 +67,7 @@ namespace SoftwareRenderer
         public Transform Parent = null;
         private Vector3 _position = Vector3.Zero;
         private Vector3 _rotation = Vector3.Zero;
-        private Vector3 _scale;
+        private Vector3 _scale = Vector3.One;
         private bool _matrixDirty = false;
         private Matrix4X4 _localToWorldTransform = Matrix4X4.Identity;
         private Matrix4X4 _worldToLocalTransform = Matrix4X4.Identity;

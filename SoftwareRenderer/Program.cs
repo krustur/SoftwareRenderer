@@ -36,8 +36,28 @@ namespace SoftwareRenderer
 
             var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
             var cube = new BoxGeometryGenerator(0.5f);
-            float cubeRot = 0;
             var vertexBuffer = new Vector4[cube.Vertices.Length];
+
+            // Scene
+            // ZeroCamera
+            var zeroCamera = new Camera(60f, (float)640 / 480, 0.3f, 1000f);
+            zeroCamera.Transform.Position = Vector3.Zero;
+            zeroCamera.Transform.Rotation = Vector3.Zero;
+            zeroCamera.Transform.Scale = Vector3.One;
+
+            // Camera
+            var camera = new Camera(60f, (float)640 / 480, 0.3f, 1000f);
+            camera.Transform.Position = new Vector3(2.5f, 1.5f, -3f);
+            camera.Transform.Rotation = new Vector3(4f, 0, 0);
+            camera.Transform.Scale = Vector3.One;
+
+            // RotCube
+            float cubeRot = 0;
+            var rotCube = new Transform
+            {
+                Position = new Vector3(0, 0, 4),
+                Rotation = new Vector3(0, 0, 0)
+            };
 
             var lastTicks = SDL.SDL_GetTicks();
             // loop until done
@@ -89,90 +109,38 @@ namespace SoftwareRenderer
                 //    (int)(softwareBuffer.Heigth / 2 + Vector3.Normalize(u).Y * lengthOfPontoQ),
                 //    0x000000ff);
 
-                var oneScale = Matrix4X4.CreateScale(new Vector3(1, 1, 1));
-                
-                // ZeroCamera
-                var zerocamtranslation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 0));
-                var zerocamrotationX = Matrix4X4.CreateRotationX(0);
-                var zerocamrotationY = Matrix4X4.CreateRotationY(0);
-                var zerocamrotationZ = Matrix4X4.CreateRotationZ(0);
-                var zerocamTransform = oneScale * zerocamtranslation * zerocamrotationX * zerocamrotationY * zerocamrotationZ;
-                var zerocamViewTransform = zerocamTransform.Inverse();
-                zerocamViewTransform[2] = new Vector4(-zerocamViewTransform[2].X, -zerocamViewTransform[2].Y, -zerocamViewTransform[2].Z, -zerocamViewTransform[2].W);
-
-                // Camera
-                var camtranslation = Matrix4X4.CreateTranslation(new Vector3(2.5f, 1.5f, 0));
-                var camrotationX = Matrix4X4.CreateRotationX(MathHelper.ToRadians(4));
-                var camrotationY = Matrix4X4.CreateRotationY(0);
-                var camrotationZ = Matrix4X4.CreateRotationZ(0);
-                var camTransform = oneScale * camtranslation * camrotationZ * camrotationY * camrotationX;
-                var camViewTransform = camTransform.Inverse();
-
-                // RotCube
-                var rotcubetranslation = Matrix4X4.CreateTranslation(new Vector3(0, 0, 4));
-                var rotcuberotationX = Matrix4X4.CreateRotationX(0);
-                var rotcuberotationY = Matrix4X4.CreateRotationY(cubeRot);
-                var rotcuberotationZ = Matrix4X4.CreateRotationZ(0);
-                var rotcubecubeTransform = oneScale * rotcubetranslation * rotcuberotationZ * rotcuberotationY * rotcuberotationX;
-                cubeRot += 0.003f;
+                rotCube.Rotation = new Vector3(0, cubeRot, 0);
+                cubeRot += 1f;
 
                 // Render test
-                //var world = Matrix4X4.Identity;
-                //var proj = Matrix4X4.CreatePerspectiveFieldOfView(0, softwareBuffer.Width, 0, softwareBuffer.Heigth, 60.0f, 0.3f, 1000);
-                var proj = Matrix4X4.CreatePerspective(60.0f, 1.33333f, 0.3f, 100);
-
-                //proj = Matrix4X4.Identity;
-                //var view = zerocamTransformInv;// cubeTransform * camTransform;//Matrix4X4.Identity;
-                //var worldViewProj = world * view * proj;
-
-
-                //var rotcubeworld
+                var activeCamera = camera;           
                 var verticeCount = 0;
-                var thisTransform = proj * rotcubecubeTransform * zerocamViewTransform;
-                //thisTransform = rotcubecubeTransform;
+                var modelViewTransform = activeCamera.Projection * activeCamera.WorldToCamera * rotCube.LocalToWorldTransform;
                 foreach (var cubeVertex in cube.Vertices)
                 {
-                    //var test = Vector4.Transform(cubeVertex, rotcubecubeTransform * zerocamViewTransform * proj);
-                    //var inClipSpace = Vector4.Transform(cubeVertex, thisTransform);
-                    var inClipSpace = thisTransform * cubeVertex;
+                    var inClipSpace = modelViewTransform * cubeVertex;
 
                     inClipSpace.X /= inClipSpace.W;
                     inClipSpace.Y /= inClipSpace.W;
                     inClipSpace.Z /= inClipSpace.W;
-                    //inClipSpace.X += 1f;
-                    //inClipSpace.Y += 1f;
-                    //inClipSpace.Z += 1f;
                     inClipSpace.X *= softwareBuffer.Width * 0.5f;
-                    inClipSpace.Y *= softwareBuffer.Heigth * 0.5f;
+                    inClipSpace.Y *= softwareBuffer.Heigth * -0.5f;
                     inClipSpace.Z *= 0.5f;
-
-                    //var inClipSpace = Vector3.Transform(inCameraSpace, proj);
-                    //var inCameraSpace2 = new Vector3(inCameraSpace.X, inCameraSpace.Y, inCameraSpace.Z + 1.55f);
-                    //var inClipSpace = Vector3.Transform(inCameraSpace2, proj);
-                    //inClipSpace.X *= softwareBuffer.Width;
-                    //inClipSpace.Y *= softwareBuffer.Heigth;
-
-                    //var z = inCameraSpace.Z + 1.55f;
-                    //var x = (float)-((0.3 / z) * inCameraSpace.X) * softwareBuffer.Width;
-                    //var y = (float)-((0.3 / z) * inCameraSpace.Y) * softwareBuffer.Heigth;
-                    //var inClipSpace2 = new Vector3(x, y, z);
 
                     vertexBuffer[verticeCount++] = inClipSpace;
                 }
 
                 for (int face = 0; face < cube.Indices.Length / 3; face++)
                 {
-                    var pixScaleX = 1;// softwareBuffer.Width;
-                    var pixScaleY = 1;// softwareBuffer.Heigth;
                     var i1 = cube.Indices[face * 3 + 0];
                     var i2 = cube.Indices[face * 3 + 1];
                     var i3 = cube.Indices[face * 3 + 2];
-                    var x1 = vertexBuffer[i1].X * pixScaleX;
-                    var y1 = vertexBuffer[i1].Y * pixScaleY;
-                    var x2 = vertexBuffer[i2].X * pixScaleX;
-                    var y2 = vertexBuffer[i2].Y * pixScaleY;
-                    var x3 = vertexBuffer[i3].X * pixScaleX;
-                    var y3 = vertexBuffer[i3].Y * pixScaleY;
+                    var x1 = vertexBuffer[i1].X;
+                    var y1 = vertexBuffer[i1].Y;
+                    var x2 = vertexBuffer[i2].X;
+                    var y2 = vertexBuffer[i2].Y;
+                    var x3 = vertexBuffer[i3].X;
+                    var y3 = vertexBuffer[i3].Y;
                     softwareBuffer.DrawLine(
                         (int)(softwareBuffer.Width / 2 + x1),
                         (int)(softwareBuffer.Heigth / 2 + y1),
@@ -219,8 +187,8 @@ namespace SoftwareRenderer
                     continue;
                 lastTicks = ticks;
                 var fps = 1000 / ticksDiff;
-                //Console.WriteLine($"Frames per second: {fps}");
-                Console.WriteLine($"cube0: {vertexBuffer[0].X},{vertexBuffer[0].Y},{vertexBuffer[0].Z}");
+                Console.WriteLine($"Frames per second: {fps}");
+                //Console.WriteLine($"cube0: {vertexBuffer[0].X},{vertexBuffer[0].Y},{vertexBuffer[0].Z}");
             }
 
             SDL.SDL_Quit();

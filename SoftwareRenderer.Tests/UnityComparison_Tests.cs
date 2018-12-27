@@ -338,11 +338,11 @@ namespace SoftwareRenderer.Tests
             Assert.AreEqual(_grandParentViewPointInZeroCameraUnity.Y, _zeroCamera.WorldToViewportPoint(_grandParent.Position).Y);
         }
 
-        [TestMethod]
-        [Ignore]
-        public void UnityComparison_Tests2_ZeroCamera_GrandParent_WorldToViewportPoint_Z()
-        {
-            Assert.AreEqual(_grandParentViewPointInZeroCameraUnity.Z, _zeroCamera.WorldToViewportPoint(_grandParent.Position).Z);
-        }
+        //[TestMethod]
+        //[Ignore]
+        //public void UnityComparison_Tests2_ZeroCamera_GrandParent_WorldToViewportPoint_Z()
+        //{
+        //    Assert.AreEqual(_grandParentViewPointInZeroCameraUnity.Z, _zeroCamera.WorldToViewportPoint(_grandParent.Position).Z);
+        //}
     }
 }
