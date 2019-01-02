@@ -179,5 +179,14 @@ namespace SoftwareRenderer
         //        position.X * matrix.M12 + position.Y * matrix.M22 + position.Z * matrix.M32 + matrix.M42,
         //        position.X * matrix.M13 + position.Y * matrix.M23 + position.Z * matrix.M33 + matrix.M43);
         //}
+        public uint AsUint()
+        {
+            var b = (uint)(X * 0xff) << 16;
+            var c = (uint)(Y * 0xff) << 8;
+            var d = (uint)(Z * 0xff);
+
+            var result = b | c | d;
+            return result;
+        }
     }
 }

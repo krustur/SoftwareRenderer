@@ -18,7 +18,6 @@ namespace SoftwareRenderer
                 Name = Name,
                 Vertices = Vertices.ToArray(),
                 Indices = Indices.ToArray(),
-                Color = Color,
                 Material = Material,
             };
             

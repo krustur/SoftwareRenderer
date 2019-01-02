@@ -36,8 +36,11 @@ namespace SoftwareRenderer
                 WindowWidth, WindowHeight);
 
             var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
-            var cube = new BoxGeometryGenerator(0.5f);
-            var vertexBuffer = new Vector4[cube.Vertices.Length];
+            var cubeBuilder1 = new BoxGeometryGenerator(0.5f, new Vector3(1, 0, 1));
+            var cubeBuilder2 = new BoxGeometryGenerator(0.5f, new Vector3(1, 0, 0));
+            var cubeBuilder3 = new BoxGeometryGenerator(0.5f, new Vector3(0, 1, 0));
+            var cubeBuilder4 = new BoxGeometryGenerator(0.5f, new Vector3(0, 0, 1));
+            var vertexBuffer = new Vector4[10000];
 
             // Scene
             var zeroCamera = new Camera(60f, (float)640 / 480, 0.3f, 1000f);
@@ -153,39 +156,35 @@ namespace SoftwareRenderer
                 {
                     new SceneObject
                     {
-                        Vertices = cube.Vertices,
-                        Indices = cube.Indices,
                         Transform = rotCube,
-                        Color = 0x00ff00ff
+                        Mesh = cubeBuilder1.Mesh
                     },
                     new SceneObject
                     {
-                        Vertices = cube.Vertices,
-                        Indices = cube.Indices,
                         Transform = grandParent,
-                        Color = 0x00ff0000
+                        Mesh = cubeBuilder2.Mesh
+
                     },
                     new SceneObject
                     {
-                        Vertices = cube.Vertices,
-                        Indices = cube.Indices,
                         Transform = parent,
-                        Color = 0x0000ff00
+                        Mesh = cubeBuilder3.Mesh
+
                     },
                     new SceneObject
                     {
-                        Vertices = cube.Vertices,
-                        Indices = cube.Indices,
                         Transform = child,
-                        Color = 0x000000ff
+                        Mesh = cubeBuilder4.Mesh
+
                     },
                 };
                 foreach (var sceneObject in sceneObjects)
                 {
 
                     var modelViewTransform = activeCamera.Projection * activeCamera.WorldToCamera * sceneObject.Transform.LocalToWorldTransform;
+                    var mesh = sceneObject.Mesh;
                     var verticeCount = 0;
-                    foreach (var vertex in sceneObject.Vertices)
+                    foreach (var vertex in mesh.Vertices)
                     {
                         var inClipSpace = modelViewTransform * vertex;
 
@@ -203,11 +202,11 @@ namespace SoftwareRenderer
                         vertexBuffer[verticeCount++] = inClipSpace;
                     }
 
-                    for (int face = 0; face < sceneObject.Indices.Length / 3; face++)
+                    for (int face = 0; face < sceneObject.Mesh.Indices.Length / 3; face++)
                     {
-                        var i1 = cube.Indices[face * 3 + 0];
-                        var i2 = cube.Indices[face * 3 + 1];
-                        var i3 = cube.Indices[face * 3 + 2];
+                        var i1 = mesh.Indices[face * 3 + 0];
+                        var i2 = mesh.Indices[face * 3 + 1];
+                        var i3 = mesh.Indices[face * 3 + 2];
                         var x1 = vertexBuffer[i1].X;
                         var y1 = vertexBuffer[i1].Y;
                         var x2 = vertexBuffer[i2].X;
@@ -237,19 +236,19 @@ namespace SoftwareRenderer
                             (int) (y1),
                             (int) (x2),
                             (int) (y2),
-                            sceneObject.Color);
+                            mesh.Material.Diffuse.AsUint());
                         softwareBuffer.DrawLine(
                             (int) (x2),
                             (int) (y2),
                             (int) (x3),
                             (int) (y3),
-                            sceneObject.Color);
+                            mesh.Material.Diffuse.AsUint());
                         softwareBuffer.DrawLine(
                             (int) (x3),
                             (int) (y3),
                             (int) (x1),
                             (int) (y1),
-                            sceneObject.Color);
+                            mesh.Material.Diffuse.AsUint());
                     }
                 }
 
