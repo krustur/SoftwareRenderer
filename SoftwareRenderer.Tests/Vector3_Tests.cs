@@ -14,7 +14,7 @@ namespace SoftwareRenderer.Tests
         public void Init()
         {
             var p = new Vector3(2, 2, 1);
-            var q = new Vector3 {X = 1, Y = -2, Z = 0};
+            var q = new Vector3 { X = 1, Y = -2, Z = 0 };
             _dot = Vector3.Dot(p, q);
             _cross = Vector3.Cross(p, q);
             _proj = Vector3.Proj(q, p);

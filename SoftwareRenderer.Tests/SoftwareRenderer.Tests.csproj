@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="MyAssert.cs" />
     <Compile Include="UnityComparison_Tests.cs" />
+    <Compile Include="ObjParser_Tests.cs" />
     <Compile Include="Vector3_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

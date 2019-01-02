@@ -141,6 +141,11 @@ namespace SoftwareRenderer
                 softwareBuffer.DrawLine(20, 25, 25, 25, 0x000000ff);
                 softwareBuffer.DrawLine(25, 20, 25, 25, 0x000000ff);
 
+                // Obj test
+                var objTest = new ObjLoader().Load(
+                    @"d:\github\SoftwareRenderer\Blender\test.obj",
+                    @"d:\github\SoftwareRenderer\Blender\test.mtl"
+                    );
 
                 // Render test
                 var activeCamera = camera;
@@ -307,13 +312,5 @@ namespace SoftwareRenderer
             }
         }
 
-    }
-
-    public class SceneObject
-    {
-        public Vector3[] Vertices { get; set; }
-        public uint[] Indices { get; set; }
-        public Transform Transform { get; set; }
-        public uint Color { get; set; }
     }
 }
