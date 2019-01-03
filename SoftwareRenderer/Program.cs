@@ -44,9 +44,13 @@ namespace SoftwareRenderer
             var vertexBuffer = new Vector4[10000];
             
             // Obj test
-            var objTest = new ObjLoader().Load(
+            var cubeObj = new ObjLoader().Load(
                 @"d:\github\SoftwareRenderer\Blender\test.obj",
                 @"d:\github\SoftwareRenderer\Blender\test.mtl"
+            );
+            var torusObj = new ObjLoader().Load(
+                @"d:\github\SoftwareRenderer\Blender\torus.obj",
+                @"d:\github\SoftwareRenderer\Blender\torus.mtl"
             );
 
             // Scene
@@ -138,6 +142,7 @@ namespace SoftwareRenderer
                 //    0x000000ff);
 
                 rotCube.Rotation = new Vector3(0, cubeRot, 0);
+                child.Rotation = new Vector3(cubeRot / 2, 0, cubeRot * 1.3f);
                 cubeRot += 1f;
 
                 // Gizmo
@@ -159,25 +164,22 @@ namespace SoftwareRenderer
                     new SceneObject
                     {
                         Transform = rotCube,
-                        Mesh = objTest.Single(x => x.Name == "Cube")
+                        Mesh = cubeObj.Single(x => x.Name == "Cube")
                     },
                     new SceneObject
                     {
                         Transform = grandParent,
                         Mesh = cubeBuilder2.Mesh
-
                     },
                     new SceneObject
                     {
                         Transform = parent,
                         Mesh = cubeBuilder3.Mesh
-
                     },
                     new SceneObject
                     {
                         Transform = child,
-                        Mesh = cubeBuilder4.Mesh
-
+                        Mesh = torusObj.Single(x => x.Name == "Torus")
                     },
                 };
                 foreach (var sceneObject in sceneObjects)
