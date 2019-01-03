@@ -19,7 +19,7 @@ namespace SoftwareRenderer
         public void SetPixel(float x, float y, uint col)
         {
             x *= Width;
-            y *= Width;
+            y *= Heigth;
             var xi = (int)x;
             var yi = (int)y;
 
@@ -40,10 +40,10 @@ namespace SoftwareRenderer
         {
             var colInt = col.AsUint();
 
-            x1 *= Width;
-            x2 *= Width;
-            y1 *= Heigth;
-            y2 *= Heigth;
+            x1 = (x1 * Width);
+            x2 = (x2 * Width);
+            y1 = (y1 * Heigth);
+            y2 = (y2 * Heigth);
 
             if (Math.Abs(x2 - x1) > Math.Abs(y2 - y1))
             {
@@ -136,6 +136,47 @@ namespace SoftwareRenderer
 
         public void DrawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, Vector3 materialDiffuse)
         {
+            var diffuse = materialDiffuse.AsUint();
+
+            //var t0 = new Vector3(((int)(x1 * Width)), (int)(y1 * Heigth), 0);
+            //var t1 = new Vector3((int)(x2 * Width), (int)(y2 * Heigth), 0);
+            //var t2 = new Vector3((int)(x3 * Width), (int)(y3 * Heigth), 0);
+
+            //if (t0.Y == t1.Y && t0.Y == t2.Y) return; // I dont care about degenerate triangles
+
+            //// sort the vertices, t0, t1, t2 lower−to−upper (bubblesort yay!) 
+            //if (t0.Y > t1.Y) Swapper.Swap(ref t0, ref t1);
+            //if (t0.Y > t2.Y) Swapper.Swap(ref t0, ref t2);
+            //if (t1.Y > t2.Y) Swapper.Swap(ref t1, ref t2);
+            //int total_height = (int)(t2.Y - t0.Y);
+            //for (int y = (int)t0.Y; y <= t1.Y; y++)
+            //{
+            //    int segment_height = (int)(t1.Y - t0.Y + 1);
+            //    float alpha = (float)(y - t0.Y) / total_height;
+            //    float beta = (float)(y - t0.Y) / segment_height; // be careful with divisions by zero 
+            //    Vector3 A = t0 + (t2 - t0) * alpha;
+            //    Vector3 B = t0 + (t1 - t0) * beta;
+            //    if (A.X > B.X) Swapper.Swap(ref A, ref B);
+            //    for (int j = (int)A.X; j <= B.X; j++)
+            //    {
+            //        SetPixel(j, y, materialDiffuse.AsUint()); // attention, due to int casts t0.y+i != A.y 
+            //    }
+            //}
+            //for (int y = (int)t1.Y; y <= t2.Y; y++)
+            //{
+            //    int segment_height = (int)(t2.Y - t1.Y + 1);
+            //    float alpha = (float)(y - t0.Y) / total_height;
+            //    float beta = (float)(y - t1.Y) / segment_height; // be careful with divisions by zero 
+            //    Vector3 A = t0 + (t2 - t0) * alpha;
+            //    Vector3 B = t1 + (t2 - t1) * beta;
+            //    if (A.X > B.X) Swapper.Swap(ref A, ref B);
+            //    for (int j = (int)A.X; j <= B.X; j++)
+            //    {
+            //        SetPixel(j, y, materialDiffuse.AsUint()); // attention, due to int casts t0.y+i != A.y 
+            //    }
+            //}
+            //return;
+
             x1 *= Width;
             x2 *= Width;
             x3 *= Width;
@@ -152,11 +193,6 @@ namespace SoftwareRenderer
             //var x3p = (int)(x3in * Width);
                               
             
-            //if (y3p < y2p)
-            //{
-            //    Swapper.Swap(ref x2p, ref x3p);
-            //    Swapper.Swap(ref y2p, ref y3p);
-            //}
             if (y2p < y1p)
             {
                 Swapper.Swap(ref x1, ref x2);
@@ -172,16 +208,6 @@ namespace SoftwareRenderer
                 Swapper.Swap(ref x2, ref x3);
                 Swapper.Swap(ref y2p, ref y3p);
             }
-            //if (y2p < y1p)
-            //{
-            //    Swapper.Swap(ref x1p, ref x2p);
-            //    Swapper.Swap(ref y1p, ref y2p);
-            //}
-            //if (y3p < y1p)
-            //{
-            //    Swapper.Swap(ref x1p, ref x3p);
-            //    Swapper.Swap(ref y1p, ref y3p);
-            //}
 
 
             //DrawLine(x1p, y1p, x2p, y2p, materialDiffuse);
@@ -193,17 +219,9 @@ namespace SoftwareRenderer
             //var x2p = (int)(x2 * Width);
             //var x3p = (int)(x3 * Width);
 
-            var y12d = y2p - y1p;
-            var y23d = y3p - y2p;
-            var y13d = y3p - y1p;
-
-            //if (y12d == 0) y12d = 1;
-            //if (y23d == 0) y23d = 1;
-            //if (y13d == 0) y13d = 1;
-
-            y12d += 1;
-            y23d += 1;
-            y13d += 1;
+            var y12d = y2p - y1p + 1;
+            var y23d = y3p - y2p + 1;
+            var y13d = y3p - y1p + 1;
 
             var k12 = (x2 - x1) / y12d;
             var k23 = (x3 - x2) / y23d;
@@ -231,28 +249,29 @@ namespace SoftwareRenderer
             float lx = x1;
             float rx = x1;
 
-            for (var y = y1p; y < y2p; y++)
+            for (var y = y1p; y <= y2p; y++)
             {
 
-                rx += rightk12;
 
                 for (var x = (int) lx; x < rx; x++)
                 {
-                    SetPixel(x, y, materialDiffuse.AsUint());
+                    SetPixel(x, y, diffuse);
                 }
+                rx += rightk12;
                 lx += leftk12;
 
             }
-            rx += rightk12;
-            lx += leftk12;
+
+            //rx += rightk12;
+            //lx += leftk12;
 
             for (var y = y2p; y <= y3p; y++)
             {
-                rx += rightk23;
                 for (var x = (int) lx; x < rx; x++)
                 {
-                    SetPixel(x, y, materialDiffuse.AsUint());
+                    SetPixel(x, y, diffuse);
                 }
+                rx += rightk23;
                 lx += leftk23;
 
             }

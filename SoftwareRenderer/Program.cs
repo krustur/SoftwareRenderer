@@ -208,12 +208,13 @@ namespace SoftwareRenderer
 
                     var xx1 = 0.10f;
                     var yy1 = 0.10f;
-                    var xx2 = 0.45f;
+                    var xx2 = 0.15f;
                     var yy2 = 0.15f;
                     var xx3 = 0.95f;
-                    var yy3 = 0.16f;
+                    var yy3 = 0.15f;
                     var col = new Vector3(1, 0 ,1);
                     var col2 = new Vector3(1, 1 ,1);
+                    var col3 = new Vector3(0.5f, 0 ,0);
                     softwareBuffer.DrawTriangle(xx1, yy1, xx2, yy2, xx3, yy3, col);
                     //softwareBuffer.DrawLine(
                     //    (int)(xx1 * softwareBuffer.Width),
@@ -251,6 +252,9 @@ namespace SoftwareRenderer
                         xx1,
                         yy1,
                         col2);
+                    softwareBuffer.SetPixel(xx1, yy1, col3.AsUint());
+                    softwareBuffer.SetPixel(xx2, yy2, col3.AsUint());
+                    softwareBuffer.SetPixel(xx3, yy3, col3.AsUint());
 
 
                     for (int face = 0; face < sceneObject.Mesh.Indices.Length / 3; face++)
