@@ -119,19 +119,19 @@ illum 2
         [TestMethod]
         public void ObjParser_Tests_Face1_Index1()
         {
-            Assert.AreEqual(2L, _result[0].Indices[0]);
+            Assert.AreEqual(1L, _result[0].Indices[0]);
         }
 
         [TestMethod]
         public void ObjParser_Tests_Face2_Index2()
         {
-            Assert.AreEqual(6L, _result[0].Indices[4]);
+            Assert.AreEqual(5L, _result[0].Indices[4]);
         }
 
         [TestMethod]
         public void ObjParser_Tests_Face12_Index3()
         {
-            Assert.AreEqual(8L, _result[0].Indices[35]);
+            Assert.AreEqual(7L, _result[0].Indices[35]);
         }
 
         [TestMethod]

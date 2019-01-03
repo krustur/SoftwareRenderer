@@ -146,17 +146,17 @@ namespace SoftwareRenderer
                 cubeRot += 1f;
 
                 // Gizmo
-                softwareBuffer.DrawLine(10, 10, 40, 10, 0x00ff0000);
-                softwareBuffer.DrawLine(35, 5, 40, 10, 0x00ff0000);
-                softwareBuffer.DrawLine(35, 15, 40, 10, 0x00ff0000);
-                softwareBuffer.DrawLine(10, 10, 10, 40, 0x0000ff00);
-                softwareBuffer.DrawLine(5, 35, 10, 40, 0x0000ff00);
-                softwareBuffer.DrawLine(15, 35, 10, 40, 0x0000ff00);
-                softwareBuffer.DrawLine(10, 10, 25, 25, 0x000000ff);
-                softwareBuffer.DrawLine(20, 25, 25, 25, 0x000000ff);
-                softwareBuffer.DrawLine(25, 20, 25, 25, 0x000000ff);
+                softwareBuffer.DrawLine(10, 10, 40, 10, new Vector3(1, 0, 0));
+                softwareBuffer.DrawLine(35, 5, 40, 10, new Vector3(1, 0, 0));
+                softwareBuffer.DrawLine(35, 15, 40, 10, new Vector3(1, 0, 0));
+                softwareBuffer.DrawLine(10, 10, 10, 40, new Vector3(0, 1, 0));
+                softwareBuffer.DrawLine(5, 35, 10, 40, new Vector3(0, 1, 0));
+                softwareBuffer.DrawLine(15, 35, 10, 40, new Vector3(0, 1, 0));
+                softwareBuffer.DrawLine(10, 10, 25, 25, new Vector3(0, 0, 1));
+                softwareBuffer.DrawLine(20, 25, 25, 25, new Vector3(0, 0, 1));
+                softwareBuffer.DrawLine(25, 20, 25, 25, new Vector3(0, 0, 1));
 
-                
+
                 // Render test
                 var activeCamera = camera;
                 var sceneObjects = new List<SceneObject>()
@@ -199,12 +199,59 @@ namespace SoftwareRenderer
                         inClipSpace.Y += 1f;
                         inClipSpace.X *= 0.5f;
                         inClipSpace.Y *= 0.5f;
-                        inClipSpace.X *= softwareBuffer.Width;
-                        inClipSpace.Y *= softwareBuffer.Heigth;
-                        inClipSpace.Z *= 0.5f;
+                        //inClipSpace.X *= softwareBuffer.Width;
+                        //inClipSpace.Y *= softwareBuffer.Heigth;
+                        //inClipSpace.Z *= 0.5f;
 
                         vertexBuffer[verticeCount++] = inClipSpace;
                     }
+
+                    var xx1 = 0.10f;
+                    var yy1 = 0.10f;
+                    var xx2 = 0.45f;
+                    var yy2 = 0.15f;
+                    var xx3 = 0.95f;
+                    var yy3 = 0.16f;
+                    var col = new Vector3(1, 0 ,1);
+                    var col2 = new Vector3(1, 1 ,1);
+                    softwareBuffer.DrawTriangle(xx1, yy1, xx2, yy2, xx3, yy3, col);
+                    //softwareBuffer.DrawLine(
+                    //    (int)(xx1 * softwareBuffer.Width),
+                    //    (int)(yy1 * softwareBuffer.Heigth),
+                    //    (int)(xx2 * softwareBuffer.Width),
+                    //    (int)(yy2 * softwareBuffer.Heigth),
+                    //    col2);
+                    //softwareBuffer.DrawLine(
+                    //    (int)(xx2 * softwareBuffer.Width),
+                    //    (int)(yy2 * softwareBuffer.Heigth),
+                    //    (int)(xx3 * softwareBuffer.Width),
+                    //    (int)(yy3 * softwareBuffer.Heigth),
+                    //    col2);
+                    //softwareBuffer.DrawLine(
+                    //    (int)(xx3 * softwareBuffer.Width),
+                    //    (int)(yy3 * softwareBuffer.Heigth),
+                    //    (int)(xx1 * softwareBuffer.Width),
+                    //    (int)(yy1 * softwareBuffer.Heigth),
+                    //    col2);
+                    softwareBuffer.DrawLine(
+                        xx1 ,
+                        yy1,
+                        xx2,
+                        yy2,
+                        col2);
+                    softwareBuffer.DrawLine(
+                        xx2,
+                        yy2,
+                        xx3,
+                        yy3,
+                        col2);
+                    softwareBuffer.DrawLine(
+                        xx3,
+                        yy3,
+                        xx1,
+                        yy1,
+                        col2);
+
 
                     for (int face = 0; face < sceneObject.Mesh.Indices.Length / 3; face++)
                     {
@@ -235,24 +282,25 @@ namespace SoftwareRenderer
                         //    (int)(softwareBuffer.Width / 2 + x1),
                         //    (int)(softwareBuffer.Heigth / 2 + y1),
                         //    0x000000ff);
+                        softwareBuffer.DrawTriangle(x1, y1, x2, y2, x3, y3, mesh.Material.Diffuse);
                         softwareBuffer.DrawLine(
-                            (int) (x1),
-                            (int) (y1),
-                            (int) (x2),
-                            (int) (y2),
-                            mesh.Material.Diffuse.AsUint());
+                            x1,
+                            y1,
+                            x2,
+                            y2,
+                            mesh.Material.Diffuse / 2);
                         softwareBuffer.DrawLine(
-                            (int) (x2),
-                            (int) (y2),
-                            (int) (x3),
-                            (int) (y3),
-                            mesh.Material.Diffuse.AsUint());
+                            x2,
+                            y2,
+                            x3,
+                            y3,
+                            mesh.Material.Diffuse / 2);
                         softwareBuffer.DrawLine(
-                            (int) (x3),
-                            (int) (y3),
-                            (int) (x1),
-                            (int) (y1),
-                            mesh.Material.Diffuse.AsUint());
+                            x3,
+                            y3,
+                            x1,
+                            y1,
+                            mesh.Material.Diffuse / 2);
                     }
                 }
 
