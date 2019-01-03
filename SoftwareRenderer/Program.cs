@@ -206,55 +206,37 @@ namespace SoftwareRenderer
                         vertexBuffer[verticeCount++] = inClipSpace;
                     }
 
-                    var xx1 = 0.10f;
-                    var yy1 = 0.10f;
-                    var xx2 = 0.15f;
-                    var yy2 = 0.15f;
-                    var xx3 = 0.95f;
-                    var yy3 = 0.15f;
-                    var col = new Vector3(1, 0 ,1);
-                    var col2 = new Vector3(1, 1 ,1);
-                    var col3 = new Vector3(0.5f, 0 ,0);
-                    softwareBuffer.DrawTriangle(xx1, yy1, xx2, yy2, xx3, yy3, col);
+                    //var xx1 = 0.10f;
+                    //var yy1 = 0.10f;
+                    //var xx2 = 0.15f;
+                    //var yy2 = 0.15f;
+                    //var xx3 = 0.95f;
+                    //var yy3 = 0.15f;
+                    //var col = new Vector3(1, 0 ,1);
+                    //var col2 = new Vector3(1, 1 ,1);
+                    //var col3 = new Vector3(0.5f, 0 ,0);
+                    //softwareBuffer.DrawTriangle(xx1, yy1, xx2, yy2, xx3, yy3, col);
                     //softwareBuffer.DrawLine(
-                    //    (int)(xx1 * softwareBuffer.Width),
-                    //    (int)(yy1 * softwareBuffer.Heigth),
-                    //    (int)(xx2 * softwareBuffer.Width),
-                    //    (int)(yy2 * softwareBuffer.Heigth),
+                    //    xx1 ,
+                    //    yy1,
+                    //    xx2,
+                    //    yy2,
                     //    col2);
                     //softwareBuffer.DrawLine(
-                    //    (int)(xx2 * softwareBuffer.Width),
-                    //    (int)(yy2 * softwareBuffer.Heigth),
-                    //    (int)(xx3 * softwareBuffer.Width),
-                    //    (int)(yy3 * softwareBuffer.Heigth),
+                    //    xx2,
+                    //    yy2,
+                    //    xx3,
+                    //    yy3,
                     //    col2);
                     //softwareBuffer.DrawLine(
-                    //    (int)(xx3 * softwareBuffer.Width),
-                    //    (int)(yy3 * softwareBuffer.Heigth),
-                    //    (int)(xx1 * softwareBuffer.Width),
-                    //    (int)(yy1 * softwareBuffer.Heigth),
+                    //    xx3,
+                    //    yy3,
+                    //    xx1,
+                    //    yy1,
                     //    col2);
-                    softwareBuffer.DrawLine(
-                        xx1 ,
-                        yy1,
-                        xx2,
-                        yy2,
-                        col2);
-                    softwareBuffer.DrawLine(
-                        xx2,
-                        yy2,
-                        xx3,
-                        yy3,
-                        col2);
-                    softwareBuffer.DrawLine(
-                        xx3,
-                        yy3,
-                        xx1,
-                        yy1,
-                        col2);
-                    softwareBuffer.SetPixel(xx1, yy1, col3.AsUint());
-                    softwareBuffer.SetPixel(xx2, yy2, col3.AsUint());
-                    softwareBuffer.SetPixel(xx3, yy3, col3.AsUint());
+                    //softwareBuffer.SetPixel(xx1, yy1, col3.AsUint());
+                    //softwareBuffer.SetPixel(xx2, yy2, col3.AsUint());
+                    //softwareBuffer.SetPixel(xx3, yy3, col3.AsUint());
 
 
                     for (int face = 0; face < sceneObject.Mesh.Indices.Length / 3; face++)
@@ -286,25 +268,71 @@ namespace SoftwareRenderer
                         //    (int)(softwareBuffer.Width / 2 + x1),
                         //    (int)(softwareBuffer.Heigth / 2 + y1),
                         //    0x000000ff);
-                        softwareBuffer.DrawTriangle(x1, y1, x2, y2, x3, y3, mesh.Material.Diffuse);
-                        softwareBuffer.DrawLine(
-                            x1,
-                            y1,
-                            x2,
-                            y2,
-                            mesh.Material.Diffuse / 2);
-                        softwareBuffer.DrawLine(
-                            x2,
-                            y2,
-                            x3,
-                            y3,
-                            mesh.Material.Diffuse / 2);
-                        softwareBuffer.DrawLine(
-                            x3,
-                            y3,
-                            x1,
-                            y1,
-                            mesh.Material.Diffuse / 2);
+
+                        //var a = new Vector3(vertexBuffer[i1].X, vertexBuffer[i1].Y, vertexBuffer[i1].Z);
+                        //var an = Vector3.Normalize(a);
+                        //var b = new Vector3(vertexBuffer[i2].X, vertexBuffer[i2].Y, vertexBuffer[i2].Z);
+                        //var bn = Vector3.Normalize(b);
+                        //var dot = Vector3.Dot(a, b);
+                        //var dotn = Vector3.Dot(an, bn);
+
+                        //var c = new Vector3(
+                        //    (vertexBuffer[i2] - vertexBuffer[i1]).X,
+                        //    (vertexBuffer[i2] - vertexBuffer[i1]).Y,
+                        //    (vertexBuffer[i2] - vertexBuffer[i1]).Z
+                        //    );
+                        //var d = new Vector3(
+                        //    (vertexBuffer[i3] - vertexBuffer[i1]).X,
+                        //    (vertexBuffer[i3] - vertexBuffer[i1]).Y,
+                        //    (vertexBuffer[i3] - vertexBuffer[i1]).Z
+                        //);
+                        //var ddot = Vector3.Dot(c, d);
+
+                        //var cn = Vector3.Normalize(c);
+                        //var dn = Vector3.Normalize(d);
+                        //var ddotn = Vector3.Dot(cn, dn);
+
+
+                        //if (ddotn > 0)
+
+
+                        var a = new Vector3(
+                            (vertexBuffer[i3] - vertexBuffer[i1]).X,
+                            (vertexBuffer[i3] - vertexBuffer[i1]).Y,
+                            (vertexBuffer[i3] - vertexBuffer[i1]).Z
+                        );
+                        var b = new Vector3(
+                            (vertexBuffer[i2] - vertexBuffer[i1]).X,
+                            (vertexBuffer[i2] - vertexBuffer[i1]).Y,
+                            (vertexBuffer[i2] - vertexBuffer[i1]).Z
+                            );
+                        var n = Vector3.Cross(a, b);
+                        var nn = Vector3.Normalize(n);
+                        var l = Vector3.Forward;
+                        var i = Vector3.Dot(nn, l);
+
+                        if (i > 0)
+                        {
+                            softwareBuffer.DrawTriangle(x1, y1, x2, y2, x3, y3, mesh.Material.Diffuse);
+                            softwareBuffer.DrawLine(
+                                x1,
+                                y1,
+                                x2,
+                                y2,
+                                mesh.Material.Diffuse / 2);
+                            softwareBuffer.DrawLine(
+                                x2,
+                                y2,
+                                x3,
+                                y3,
+                                mesh.Material.Diffuse / 2);
+                            softwareBuffer.DrawLine(
+                                x3,
+                                y3,
+                                x1,
+                                y1,
+                                mesh.Material.Diffuse / 2);
+                        }
                     }
                 }
 
