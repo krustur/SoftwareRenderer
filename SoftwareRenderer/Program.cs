@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SDL2;
 
 
@@ -36,11 +37,17 @@ namespace SoftwareRenderer
                 WindowWidth, WindowHeight);
 
             var softwareBuffer = new SoftwareBuffer(WindowWidth, WindowHeight);
-            var cubeBuilder1 = new BoxGeometryGenerator(0.5f, new Vector3(1, 0, 1));
+            //var cubeBuilder1 = new BoxGeometryGenerator(0.5f, new Vector3(1, 0, 1));
             var cubeBuilder2 = new BoxGeometryGenerator(0.5f, new Vector3(1, 0, 0));
             var cubeBuilder3 = new BoxGeometryGenerator(0.5f, new Vector3(0, 1, 0));
             var cubeBuilder4 = new BoxGeometryGenerator(0.5f, new Vector3(0, 0, 1));
             var vertexBuffer = new Vector4[10000];
+            
+            // Obj test
+            var objTest = new ObjLoader().Load(
+                @"d:\github\SoftwareRenderer\Blender\test.obj",
+                @"d:\github\SoftwareRenderer\Blender\test.mtl"
+            );
 
             // Scene
             var zeroCamera = new Camera(60f, (float)640 / 480, 0.3f, 1000f);
@@ -144,12 +151,7 @@ namespace SoftwareRenderer
                 softwareBuffer.DrawLine(20, 25, 25, 25, 0x000000ff);
                 softwareBuffer.DrawLine(25, 20, 25, 25, 0x000000ff);
 
-                // Obj test
-                var objTest = new ObjLoader().Load(
-                    @"d:\github\SoftwareRenderer\Blender\test.obj",
-                    @"d:\github\SoftwareRenderer\Blender\test.mtl"
-                    );
-
+                
                 // Render test
                 var activeCamera = camera;
                 var sceneObjects = new List<SceneObject>()
@@ -157,7 +159,7 @@ namespace SoftwareRenderer
                     new SceneObject
                     {
                         Transform = rotCube,
-                        Mesh = cubeBuilder1.Mesh
+                        Mesh = objTest.Single(x => x.Name == "Cube")
                     },
                     new SceneObject
                     {

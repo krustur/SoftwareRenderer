@@ -19,7 +19,7 @@ namespace SoftwareRenderer
         {
             if (x < 0 || x >= Width || y < 0 || y >= Heigth)
                 return;
-            Buffer[(Heigth - y) * Width + x] = col;
+            Buffer[(Heigth - 1 - y) * Width -1 + x] = col;
 
         }
 

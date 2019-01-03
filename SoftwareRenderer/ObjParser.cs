@@ -85,7 +85,7 @@ namespace SoftwareRenderer
                     for (int iFace = 0; iFace < 3; iFace++)
                     {
                         var faceColumns = columns[iFace+1].Split('/');
-                        var i = uint.Parse(faceColumns[0]);
+                        var i = uint.Parse(faceColumns[0]) - 1;
                         meshBuilder.Indices.Add(i);
 
                     }
