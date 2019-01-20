@@ -159,7 +159,7 @@ namespace SoftwareRenderer
             //    if (A.X > B.X) Swapper.Swap(ref A, ref B);
             //    for (int j = (int)A.X; j <= B.X; j++)
             //    {
-            //        SetPixel(j, y, materialDiffuse.AsUint()); // attention, due to int casts t0.y+i != A.y 
+            //        SetPixel(j, y, diffuse); // attention, due to int casts t0.y+i != A.y 
             //    }
             //}
             //for (int y = (int)t1.Y; y <= t2.Y; y++)
@@ -172,7 +172,7 @@ namespace SoftwareRenderer
             //    if (A.X > B.X) Swapper.Swap(ref A, ref B);
             //    for (int j = (int)A.X; j <= B.X; j++)
             //    {
-            //        SetPixel(j, y, materialDiffuse.AsUint()); // attention, due to int casts t0.y+i != A.y 
+            //        SetPixel(j, y, diffuse); // attention, due to int casts t0.y+i != A.y 
             //    }
             //}
             //return;
@@ -251,9 +251,7 @@ namespace SoftwareRenderer
 
             for (var y = y1p; y <= y2p; y++)
             {
-
-
-                for (var x = (int) lx; x < rx; x++)
+                for (var x = (int) lx; x <= rx; x++)
                 {
                     SetPixel(x, y, diffuse);
                 }
@@ -262,8 +260,8 @@ namespace SoftwareRenderer
 
             }
 
-            //rx += rightk12;
-            //lx += leftk12;
+            //rx = rightk12;
+            //lx = leftk12;
 
             for (var y = y2p; y <= y3p; y++)
             {

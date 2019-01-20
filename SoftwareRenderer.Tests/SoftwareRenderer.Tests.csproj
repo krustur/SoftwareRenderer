@@ -50,13 +50,16 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FbxParser_Tests.cs" />
     <Compile Include="MyAssert.cs" />
+    <Compile Include="ResourceHelper.cs" />
     <Compile Include="UnityComparison_Tests.cs" />
     <Compile Include="ObjParser_Tests.cs" />
     <Compile Include="Vector3_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DungeonTiles_embedded_png.fbx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
